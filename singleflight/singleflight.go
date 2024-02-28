@@ -88,7 +88,7 @@ type Result[T any] struct {
 // time. If a duplicate comes in, the duplicate caller waits for the
 // original to complete and receives the same results.
 // The return value shared indicates whether v was given to multiple callers.
-func (g *Group[T]) Do(key string, fn func() (T, error)) (v interface{}, err error, shared bool) {
+func (g *Group[T]) Do(key string, fn func() (T, error)) (v T, err error, shared bool) {
 	g.mu.Lock()
 	if g.m == nil {
 		g.m = make(map[string]*call[T])
@@ -97,8 +97,8 @@ func (g *Group[T]) Do(key string, fn func() (T, error)) (v interface{}, err erro
 		c.dups++
 		g.mu.Unlock()
 		c.wg.Wait()
-
-		if e, ok := c.err.(*panicError); ok {
+		var e *panicError
+		if errors.As(c.err, &e) {
 			panic(e)
 		} else if errors.Is(c.err, errGoexit) {
 			runtime.Goexit()
@@ -159,8 +159,8 @@ func (g *Group[T]) doCall(c *call[T], key string, fn func() (T, error)) {
 		if g.m[key] == c {
 			delete(g.m, key)
 		}
-
-		if e, ok := c.err.(*panicError); ok {
+		var e *panicError
+		if errors.As(c.err, &e) {
 			// In order to prevent the waiting channels from being blocked forever,
 			// needs to ensure that this panic cannot be recovered.
 			if len(c.chans) > 0 {
