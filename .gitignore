@@ -20,3 +20,11 @@
 # Go workspace file
 go.work
 *.pb*.go
+/.idea/.gitignore
+/.idea/codeStyles/codeStyleConfig.xml
+/.idea/GitCommitMessageStorage.xml
+/.idea/GOHCache.xml
+/.idea/kratos-admin.iml
+/.idea/modules.xml
+/.idea/protoeditor.xml
+/.idea/vcs.xml
