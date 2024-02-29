@@ -1,11 +1,11 @@
 syntax = "proto3";
 
 // 定义包名
-package api.kratos.v1;
+package api.kratos.api;
 import "errors/errors.proto";
 
 // 多语言特定包名，用于源代码引用
-option go_package = "kratos/api;v1";
+option go_package = "kratos/api;api";
 option java_multiple_files = true;
 option java_package = "api.errors";
 
