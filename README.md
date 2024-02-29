@@ -1,2 +1,1 @@
-# kit
-golang工具包
+# kratos-admin
