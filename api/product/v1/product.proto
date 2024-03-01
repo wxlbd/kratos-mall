@@ -2,107 +2,191 @@ syntax = "proto3";
 
 package api.product.v1;
 
+import "validate/validate.proto";
+import "google/api/annotations.proto";
+
 option go_package = "kratos-admin/api/product/v1;v1";
 option java_multiple_files = true;
 option java_package = "api.product.v1";
 
 service Product {
-	rpc CreateProduct (CreateProductRequest) returns (CreateProductReply);
-	rpc UpdateProduct (UpdateProductRequest) returns (UpdateProductReply);
-	rpc DeleteProduct (DeleteProductRequest) returns (DeleteProductReply);
-	rpc GetProduct (GetProductRequest) returns (GetProductReply);
-	rpc ListProduct (ListProductRequest) returns (ListProductReply);
+	// 创建商品
+	rpc CreateProduct (CreateProductRequest) returns (CreateProductReply){
+		option (google.api.http) = {
+			post: "/v1/product"
+			body: "*"
+		};
+	};
+	// 更新商品
+	rpc UpdateProduct (UpdateProductRequest) returns (UpdateProductReply){
+		option (google.api.http) = {
+			put: "/v1/product/{product_id}"
+			body: "*"
+		};
+	};
+	// 删除商品
+	rpc DeleteProduct (DeleteProductRequest) returns (DeleteProductReply){
+		option (google.api.http) = {
+			delete: "/v1/product/{product_id}"
+		};
+	};
+	// 获取商品详情
+	rpc GetProduct (GetProductRequest) returns (GetProductReply){
+		option (google.api.http) = {
+			get: "/v1/product/{product_id}"
+		};
+	};
+	// 获取商品列表
+	rpc ListProduct (ListProductRequest) returns (ListProductReply){
+		option (google.api.http) = {
+			get: "/v1/product"
+		};
+	};
+	// 获取商品sku列表
+	rpc ListProductSku (ListProductSkuRequest) returns (ListProductSkuReply){
+		option (google.api.http) = {
+			get: "/v1/product/{product_id}/sku"
+		};
+	}
+	// 删除商品sku
+	rpc DeleteProductSku (DeleteProductSkuRequest) returns (DeleteProductSkuReply){
+		option (google.api.http) = {
+			delete: "/v1/product/{product_id}/sku/{product_sku_id}"
+		};
+	}
 }
-message MemberPriceList {
-	int64    MemberLevelId = 1;
-	float  MemberPrice = 2;
-	string    MemberLevelName = 3;
+
+message DeleteProductSkuRequest {
+	int64 product_id = 1;
+	int64 product_sku_id = 2;
 }
-message ProductAttributeValueList {
-	int64    ProductAttributeId = 1;
-	string  AttributeValues = 2;
+
+message DeleteProductSkuReply {
 }
-message ProductFullReductionList {
-	float  FullPrice = 1;
-	float  ReducePrice = 2;
+
+
+message ListProductSkuRequest {
+	int64       product_id = 1;
 }
-message ProductLadderList {
-	int64    Count = 2;
-	float  Discount = 3;
-	float  Price = 4;
+message ListProductSkuReply {
+	repeated Sku sku = 1;
 }
-message SkuStockList {
-	string    SkuCode = 1;
-	float  Price = 2;
-	int64    Stock = 3;
-	int64    LowStock = 4;
-	string    Pic = 5;
-	int64    Sale = 6;
-	float  PromotionPrice = 7;
-	int64    LockStock = 8;
-	string    SpData = 9;
+
+message Sku {
+	string    sku_code = 1;
+	float      price = 2;
+	int64      stock = 3;
+	int64      stock_warn = 4;
+	string    pic = 5;
+	int64      sales = 6;
+	float     promotion_price = 7;
+	int64     gift_block_stock = 8;
+	string    sku_name = 9;
+	string    attribute_data = 10;//属性数据json
 }
 
 message CreateProductRequest {
-	repeated int64       ProductCategoryIds = 1;
-	int64       BrandId = 2;
-	int64       ProductCategoryId = 3;
-	int64       FeightTemplateId = 4;
-	int64       ProductAttributeCategoryId = 5;
-	string      Name = 6;
-	string      Pic = 7;
-	string      ProductSn = 8;
-	int64       DeleteStatus = 9;
-	int64       PublishStatus = 10;
-	int64       NewStatus = 11;
-	int64       RecommandStatus = 12;
-	int64       VerifyStatus = 13;
-	int64       Sort = 14;
-	int64       Sale = 15;
-	double     Price = 16;
-	double     PromotionPrice = 17;
-	int64       GiftGrowth = 18;
-	int64       GiftPoint = 19;
-	int64       UsePointLimit = 20;
-	string      SubTitle = 21;
-	string      Description = 22;
-	double     OriginalPrice = 23;
-	int64       Stock = 24;
-	int64       LowStock = 25;
-	string      Unit = 26;
-	double     Weight = 27;
-	int64       PreviewStatus = 28;
-	string      ServiceIds = 29;
-	string      Keywords = 30;
-	string      Note = 31;
-	string      AlbumPics = 32;
-	string      DetailTitle = 33;
-	string      DetailDesc = 34;
-	string      DetailHtml = 35;
-	string      DetailMobileHtml = 36;
-	string   PromotionStartTime = 37;
-	string   PromotionEndTime = 38;
-	int64       PromotionPerLimit = 39;
-	int64       PromotionType = 40;
-	string      BrandName = 41;
-	string      ProductCategoryName = 42;
-	repeated MemberPriceList      MemberPriceList = 43;
-	repeated ProductAttributeValueList      ProductAttributeValueList = 44;
-	repeated ProductFullReductionList      ProductFullReductionList = 45;
-	repeated ProductLadderList      ProductLadderList = 46;
-	repeated SkuStockList      SkuStockList = 47;
+	repeated string       product_category_id = 1;// 产品分类列表
+	string       brand_id = 2;// 品牌id
+	string       flash_promotion_id = 3;// 闪购活动
+	string       product_attribute_category_id = 4;// 属性分类
+	string      name = 5;// 商品名称
+	string      pic = 6;// 主图
+	string      product_sn = 7;// 商品编码
+	int64       publish_status = 8;// 上下架状态
+	int64       new_status = 9;// 是否新品
+	int64       recommend_status = 10;// 是否推荐
+	int64       verify_status = 11;// 审核状态
+	int64       sort = 12;// 排序
+	int64       total_sales = 13;// 销量
+	double        price = 14;// 售卖价(sku里的最低价格)
+	double        promotion_price = 15;// 促销价
+	int64       gift_growth = 16;
+	int64       gift_point = 17;// 赠送的积分
+	int64       use_point_limit = 18;// 限制使用的积分
+	string      sub_title = 19;// 副标题
+	string      description = 20;// 描述
+	double        original_price = 21;// 原价
+	int64       stock = 22;// 库存
+	int64       stock_warn = 23;// 库存预警值
+	string      unit = 24;// 单位
+	double        weight = 25;// 重量
+	int64       preview_status = 26;// 是否为预览商品
+	repeated int64       service_ids = 27;// 产品服务id数组
+	repeated string      keywords = 28; // 关键字
+	string      note = 29;// 商品备注
+	repeated string      album_pics = 30[(validate.rules).repeated = {max_items: 5}];// 画册图片,连产品图片限制为5张
+	string      detail_title = 31;// 产品详述标题
+	string      detail_desc = 32;// 产品详述描述
+	string      detail_html = 33;// 产品详述
+	string      detail_mobile_html = 34;// 产品详述移动端
+	string   promotion_start_time = 35;// 促销开始时间
+	string   promotion_end_time = 36;// 促销结束时间
+	int64       promotion_per_limit = 37;// 活动限购数量
+	int64       promotion_type = 38;// 促销类型
+	string      brand_name = 39;// 品牌名称
+	string      product_category_name = 40;// 产品分类名称
+	repeated Sku      sku_list = 41[(validate.rules).repeated = {min_items: 1}];// sku列表
 }
 message CreateProductReply {
-	int32       ProductId = 1;
+	string       ProductId = 1;
 }
-message UpdateProductRequest {}
+message UpdateProductRequest {
+	string       product_id = 1; // 商品id（使用字符串防止在js中精度丢失）
+	repeated string       product_category_id = 2;// 产品分类列表
+	string       brand_id = 3;// 品牌id
+	string       flash_promotion_id = 4;// 闪购活动
+	string       product_attribute_category_id = 5;// 属性分类
+	string      name = 6;// 商品名称
+	string      pic = 7;// 主图
+	string      product_sn = 8;// 商品编码
+	int64       publish_status = 9;// 上下架状态
+	int64       new_status = 10;// 是否新品
+	int64       recommend_status = 11;// 是否推荐
+	int64       verify_status = 12;// 审核状态
+	int64       sort = 13;// 排序
+	int64       total_sales = 14;// 销量
+	double        price = 15;// 售卖价(sku里的最低价格)
+	double        promotion_price = 16;// 促销价
+	int64       gift_growth = 17;
+	int64       gift_point = 18;// 赠送的积分
+	int64       use_point_limit = 19;// 限制使用的积分
+	string      sub_title = 20;// 副标题
+	string      description = 21;// 描述
+	double        original_price = 22;// 原价
+	int64       stock = 23;// 库存
+	int64       stock_warn = 24;// 库存预警值
+	string      unit = 25;// 单位
+	double        weight = 26;// 重量
+	int64       preview_status = 27;// 是否为预览商品
+	repeated int64       service_ids = 28;// 产品服务id数组
+	repeated string      keywords = 29; // 关键字
+	string      note = 30;// 商品备注
+	repeated string      album_pics = 31[(validate.rules).repeated = {max_items: 5}];// 画册图片,连产品图片限制为5张
+	string      detail_title = 32;// 产品详述标题
+	string      detail_desc = 33;// 产品详述描述
+	string      detail_html = 34;// 产品详述
+	string      detail_mobile_html = 35;// 产品详述移动端
+	string   promotion_start_time = 36;// 促销开始时间
+	string   promotion_end_time = 37;// 促销结束时间
+	int64       promotion_per_limit = 38;// 活动限购数量
+	int64       promotion_type = 39;// 促销类型
+	string      brand_name = 40;// 品牌名称
+	string      product_category_name = 41;// 产品分类名称
+	repeated Sku      sku_list = 42[(validate.rules).repeated = {min_items: 1}];// sku列表
+}
 message UpdateProductReply {}
 
-message DeleteProductRequest {}
+message DeleteProductRequest {
+	string       product_id = 1;
+}
 message DeleteProductReply {}
 
-message GetProductRequest {}
+message GetProductRequest {
+	string       product_id = 1;
+}
 message GetProductReply {}
 
-message ListProductRequest {}
+message ListProductRequest {
+}
 message ListProductReply {}
