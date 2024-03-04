@@ -169,17 +169,44 @@ func (p *ProductRepo) productDoToPo(param *biz.Product) *po.PmsProduct {
 	return product
 }
 
+func (p *ProductRepo) productSkuDoToPo(sku *biz.ProductSku) *po.ProductSku {
+	return &po.ProductSku{
+		Id:             sku.Id,
+		ProductId:      sku.ProductId,
+		SkuCode:        sku.SkuCode,
+		Name:           sku.Name,
+		Price:          sku.Price,
+		PromotionPrice: sku.PromotionPrice,
+		Pic:            sku.Pic,
+		Stock:          sku.Stock,
+		StockWarn:      sku.StockWarn,
+		Sales:          sku.Sales,
+		GiftBlockStock: sku.GiftBlockStock,
+	}
+}
+
+func (p *ProductRepo) UpdateProduct(ctx context.Context, param *biz.UpdateProductDo) error {
+	product := p.productDoToPo(param.Product)
+	if err := p.data.DB.WithContext(ctx).Session(&gorm.Session{FullSaveAssociations: true}).Model(&po.PmsProduct{}).Where("id = ?", param.Id).Updates(&product).Error; err != nil {
+		return api.ErrorDbError("Failed to update product %d", param.Id).WithCause(err)
+	}
+	return nil
+}
+
+func (p *ProductRepo) UpdateProductSku(ctx context.Context, param *biz.UpdateProductSkuDo) error {
+	productSku := p.productSkuDoToPo(param.ProductSku)
+	if err := p.data.DB.WithContext(ctx).Model(&po.ProductSku{}).Where("id = ?", param.Id).Updates(&productSku).Error; err != nil {
+		return api.ErrorDbError("Failed to update product sku %d", param.Id).WithCause(err)
+	}
+	return nil
+}
+
 func (p *ProductRepo) CreateProduct(ctx context.Context, param *biz.CreateProductDo) (int64, error) {
 	product := p.productDoToPo(param.Product)
 	if err := p.data.DB.WithContext(ctx).Create(&product).Error; err != nil {
 		return 0, api.ErrorDbError("Failed to create product").WithCause(err)
 	}
 	return product.Id, nil
-}
-
-func (p *ProductRepo) UpdateProduct(ctx context.Context, param *biz.UpdateProductDo) error {
-	//TODO implement me
-	panic("implement me")
 }
 
 func (p *ProductRepo) DeleteProduct(ctx context.Context, productId int64) error {
@@ -206,6 +233,16 @@ func (p *ProductRepo) DeleteProductSku(ctx context.Context, skuId int64) error {
 }
 
 func (p *ProductRepo) FindProductList(ctx context.Context, req *biz.ListProductParam) (total int64, list []*biz.Product, err error) {
-	//TODO implement me
-	panic("implement me")
+	if err = p.data.DB.WithContext(ctx).Model(&po.PmsProduct{}).Where("").Count(&total).Error; err != nil {
+		return 0, nil, api.ErrorDbError("Failed to find product list").WithCause(err)
+	}
+	if err = p.data.DB.WithContext(ctx).Model(&po.PmsProduct{}).Scopes(
+		func(db *gorm.DB) *gorm.DB {
+			db = db.Offset((req.Number - 1) * req.Size)
+			return db
+		},
+	).Scan(&list).Error; err != nil {
+		return 0, nil, api.ErrorDbError("Failed to find product list").WithCause(err)
+	}
+	return total, list, nil
 }
