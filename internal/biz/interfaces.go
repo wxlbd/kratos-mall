@@ -1,6 +1,9 @@
 package biz
 
-import "context"
+import (
+	"context"
+	"time"
+)
 
 // CartRepo 购物车仓储接口
 type CartRepo interface {
@@ -12,32 +15,32 @@ type CartRepo interface {
 }
 
 type Product struct {
-	ProductCategoryId          []int64       // 产品分类列表
+	Id                         int64         // 商品id
+	ProductCategoryIds         []int64       // 产品分类列表
+	FreightTemplateId          int64         // 运费模版
 	BrandId                    int64         // 品牌id
-	FlashPromotionId           int64         // 闪购活动
 	ProductAttributeCategoryId int64         // 属性分类
 	Name                       string        // 商品名称
 	Pic                        string        // 主图
 	ProductSn                  string        // 商品编码
-	PublishStatus              int64         // 上下架状态
-	NewStatus                  int64         // 是否新品
-	RecommendStatus            int64         // 是否推荐
-	VerifyStatus               int64         // 审核状态
-	Sort                       int64         // 排序
-	TotalSales                 int64         // 销量
+	Sort                       int32         // 排序
+	TotalSales                 int32         // 销量
 	Price                      float64       // 售卖价(sku里的最低价格)
 	PromotionPrice             float64       // 促销价
-	GiftGrowth                 int64         // 赠送的成长值
-	GiftPoint                  int64         // 赠送的积分
-	UsePointLimit              int64         // 限制使用的积分
+	GiftGrowth                 int32         // 赠送的成长值
+	GiftPoint                  int32         // 赠送的积分
+	UsePointLimit              int32         // 限制使用的积分
 	SubTitle                   string        // 副标题
 	Description                string        // 描述
 	OriginalPrice              float64       // 原价
-	Stock                      int64         // 库存
-	StockWarn                  int64         // 库存预警值
+	TotalStock                 int32         // 库存
 	Unit                       string        // 单位
 	Weight                     float64       // 重量
-	PreviewStatus              int64         // 是否为预览商品
+	PreviewStatus              int8          // 是否为预览商品
+	PublishStatus              int8          // 上下架状态
+	NewStatus                  int8          // 是否新品
+	RecommendStatus            int8          // 是否推荐
+	VerifyStatus               int8          // 审核状态
 	ServiceIds                 []int64       // 产品服务id数组
 	Keywords                   []string      // 关键字
 	Note                       string        // 商品备注
@@ -46,34 +49,42 @@ type Product struct {
 	DetailDesc                 string        // 产品详述描述
 	DetailHtml                 string        // 产品详述
 	DetailMobileHtml           string        // 产品详述移动端
-	PromotionStartTime         string        // 促销开始时间
-	PromotionEndTime           string        // 促销结束时间
-	PromotionPerLimit          int64         // 活动限购数量
-	PromotionType              int64         // 促销类型
+	PromotionStartTime         time.Time     // 促销开始时间
+	PromotionEndTime           time.Time     // 促销结束时间
+	PromotionPerLimit          int32         // 活动限购数量
+	PromotionType              int8          // 促销类型
 	BrandName                  string        // 品牌名称
 	ProductCategoryName        string        // 产品分类名称
 	SkuList                    []*ProductSku // sku列表
 }
 
 type ProductSku struct {
-	Id             int64   // sku id
-	SkuCode        string  // sku编码
-	Price          float32 // 售价
-	Stock          int64   // 库存
-	StockWarn      int64   // 库存预警值
-	Pic            string  // 主图
-	Sales          int64   // 销量
-	PromotionPrice float32 // 促销价
-	GiftBlockStock int64   // 赠送的库存
-	SkuName        string  // sku名称
-	AttributeData  string  // 属性数据json
+	Id             int64       // sku id
+	SkuCode        string      // sku编码
+	Name           string      // sku名称
+	Price          float64     // 售价
+	PromotionPrice float64     // 促销价
+	Stock          int32       // 库存
+	StockWarn      int32       // 库存预警值
+	Pic            string      // 主图
+	Sales          int32       // 销量
+	GiftBlockStock int32       // 赠送的库存
+	Attributes     []Attribute // 属性数据json
+	ProductId      int64       // 产品id
 }
+
+type Attribute struct {
+	AttributeId        int    `json:"attribute_id"`
+	AttributeName      string `json:"attribute_name"`
+	AttributeValueId   int    `json:"attribute_value_id"`
+	AttributeValueName string `json:"attribute_value_name"`
+}
+
 type CreateProductDo struct {
 	*Product
 }
 
 type UpdateProductDo struct {
-	Id int64
 	*Product
 }
 
@@ -94,6 +105,10 @@ type ListProductSkuParam struct {
 	ProductId int64
 }
 
+type UpdateProductSkuDo struct {
+	*ProductSku
+}
+
 // ProductRepo 商品仓储接口
 type ProductRepo interface {
 	// FindProductById 查询商品
@@ -108,6 +123,8 @@ type ProductRepo interface {
 	CreateProduct(ctx context.Context, param *CreateProductDo) (int64, error)
 	// UpdateProduct 更新商品
 	UpdateProduct(ctx context.Context, param *UpdateProductDo) error
+	// UpdateProductSku 更新商品sku
+	UpdateProductSku(ctx context.Context, param *UpdateProductSkuDo) error
 	// DeleteProduct 删除商品
 	DeleteProduct(ctx context.Context, productId int64) error
 	// DeleteProductSku 删除商品sku
