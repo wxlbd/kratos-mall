@@ -41,3 +41,32 @@ message CartItem{
 	int64 product_sku_id = 2[(validate.rules).int64 = {gt: 0}];
 	int64 count = 3;
 }
+
+message ProductCategory {
+	int64 id = 1[(validate.rules).int64 = {gt: 0}];
+	string name = 2;
+	int32 level = 3;
+	int64 parent_id = 4[(validate.rules).int64 = {gt: 0}];
+	string sort = 5;
+	string icon = 6;
+	string description = 7;
+	repeated string keywords = 8;
+	string product_count = 9;
+	string product_unit = 10;
+	DisplayStatus nav_status = 11;
+	DisplayStatus show_status = 12;
+}
+
+message CreateProductCategoryParam {
+	ProductCategory product_category = 1;
+}
+
+message UpdateProductCategoryParam {
+	ProductCategory product_category = 1;
+}
+
+enum DisplayStatus {
+	UNKNOWN = 0;
+	SHOW = 1;
+	HIDE = 2;
+}

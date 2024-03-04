@@ -132,3 +132,35 @@ type ProductRepo interface {
 	// FindProductList 查询商品列表
 	FindProductList(ctx context.Context, req *ListProductParam) (total int64, list []*Product, err error)
 }
+
+// ProductCategoryRepo 商品分类仓储接口
+type ProductCategoryRepo interface {
+	// FindProductCategoryById 查询商品分类
+	FindProductCategoryById(ctx context.Context, id int64) (*ProductCategory, error)
+	// FindProductCategoryList 查询商品分类列表
+	FindProductCategoryList(ctx context.Context, param *ListProductCategoryParam) (total int64, list []*ProductCategory, err error)
+	// CreateProductCategory 创建商品分类
+	CreateProductCategory(ctx context.Context, param *CreateProductCategoryParam) (int64, error)
+	// UpdateProductCategory 更新商品分类
+	UpdateProductCategory(ctx context.Context, param *UpdateProductCategoryParam) error
+	// DeleteProductCategory 删除商品分类
+	DeleteProductCategory(ctx context.Context, id int64) error
+	// FindProductCategoryListByParentId 查询商品分类列表
+	FindProductCategoryListByParentId(ctx context.Context, parentId int64) ([]*ProductCategory, error)
+	// FindProductCategoryTree 获取商品分类树形结构
+	FindProductCategoryTree(ctx context.Context) ([]*TreeNode, error)
+}
+
+type TreeNode struct {
+	*ProductCategory
+	Children []*TreeNode
+}
+
+type ListProductCategoryParam struct {
+	*Page
+	Name       string
+	ParentId   int64
+	Level      int
+	ShowStatus DisplayStatus
+	NavStatus  DisplayStatus
+}
