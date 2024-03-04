@@ -786,3 +786,405 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = CartItemValidationError{}
+
+// Validate checks the field values on ProductCategory with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *ProductCategory) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ProductCategory with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ProductCategoryMultiError, or nil if none found.
+func (m *ProductCategory) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ProductCategory) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if m.GetId() <= 0 {
+		err := ProductCategoryValidationError{
+			field:  "Id",
+			reason: "value must be greater than 0",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	// no validation rules for Name
+
+	// no validation rules for Level
+
+	if m.GetParentId() <= 0 {
+		err := ProductCategoryValidationError{
+			field:  "ParentId",
+			reason: "value must be greater than 0",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	// no validation rules for Sort
+
+	// no validation rules for Icon
+
+	// no validation rules for Description
+
+	// no validation rules for ProductCount
+
+	// no validation rules for ProductUnit
+
+	// no validation rules for NavStatus
+
+	// no validation rules for ShowStatus
+
+	if len(errors) > 0 {
+		return ProductCategoryMultiError(errors)
+	}
+
+	return nil
+}
+
+// ProductCategoryMultiError is an error wrapping multiple validation errors
+// returned by ProductCategory.ValidateAll() if the designated constraints
+// aren't met.
+type ProductCategoryMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ProductCategoryMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ProductCategoryMultiError) AllErrors() []error { return m }
+
+// ProductCategoryValidationError is the validation error returned by
+// ProductCategory.Validate if the designated constraints aren't met.
+type ProductCategoryValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ProductCategoryValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ProductCategoryValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ProductCategoryValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ProductCategoryValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ProductCategoryValidationError) ErrorName() string { return "ProductCategoryValidationError" }
+
+// Error satisfies the builtin error interface
+func (e ProductCategoryValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sProductCategory.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ProductCategoryValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ProductCategoryValidationError{}
+
+// Validate checks the field values on CreateProductCategoryParam with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *CreateProductCategoryParam) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on CreateProductCategoryParam with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// CreateProductCategoryParamMultiError, or nil if none found.
+func (m *CreateProductCategoryParam) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *CreateProductCategoryParam) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetProductCategory()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, CreateProductCategoryParamValidationError{
+					field:  "ProductCategory",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, CreateProductCategoryParamValidationError{
+					field:  "ProductCategory",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetProductCategory()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return CreateProductCategoryParamValidationError{
+				field:  "ProductCategory",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return CreateProductCategoryParamMultiError(errors)
+	}
+
+	return nil
+}
+
+// CreateProductCategoryParamMultiError is an error wrapping multiple
+// validation errors returned by CreateProductCategoryParam.ValidateAll() if
+// the designated constraints aren't met.
+type CreateProductCategoryParamMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m CreateProductCategoryParamMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m CreateProductCategoryParamMultiError) AllErrors() []error { return m }
+
+// CreateProductCategoryParamValidationError is the validation error returned
+// by CreateProductCategoryParam.Validate if the designated constraints aren't met.
+type CreateProductCategoryParamValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e CreateProductCategoryParamValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e CreateProductCategoryParamValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e CreateProductCategoryParamValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e CreateProductCategoryParamValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e CreateProductCategoryParamValidationError) ErrorName() string {
+	return "CreateProductCategoryParamValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e CreateProductCategoryParamValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sCreateProductCategoryParam.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = CreateProductCategoryParamValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = CreateProductCategoryParamValidationError{}
+
+// Validate checks the field values on UpdateProductCategoryParam with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *UpdateProductCategoryParam) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on UpdateProductCategoryParam with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// UpdateProductCategoryParamMultiError, or nil if none found.
+func (m *UpdateProductCategoryParam) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *UpdateProductCategoryParam) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetProductCategory()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, UpdateProductCategoryParamValidationError{
+					field:  "ProductCategory",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, UpdateProductCategoryParamValidationError{
+					field:  "ProductCategory",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetProductCategory()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return UpdateProductCategoryParamValidationError{
+				field:  "ProductCategory",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return UpdateProductCategoryParamMultiError(errors)
+	}
+
+	return nil
+}
+
+// UpdateProductCategoryParamMultiError is an error wrapping multiple
+// validation errors returned by UpdateProductCategoryParam.ValidateAll() if
+// the designated constraints aren't met.
+type UpdateProductCategoryParamMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m UpdateProductCategoryParamMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m UpdateProductCategoryParamMultiError) AllErrors() []error { return m }
+
+// UpdateProductCategoryParamValidationError is the validation error returned
+// by UpdateProductCategoryParam.Validate if the designated constraints aren't met.
+type UpdateProductCategoryParamValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e UpdateProductCategoryParamValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e UpdateProductCategoryParamValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e UpdateProductCategoryParamValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e UpdateProductCategoryParamValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e UpdateProductCategoryParamValidationError) ErrorName() string {
+	return "UpdateProductCategoryParamValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e UpdateProductCategoryParamValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUpdateProductCategoryParam.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = UpdateProductCategoryParamValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = UpdateProductCategoryParamValidationError{}
