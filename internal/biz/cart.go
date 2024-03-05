@@ -26,8 +26,13 @@ func (u *CartUseCase) UpdateItemQuantity(ctx context.Context, param *UpdateCartI
 	return u.cartRepo.UpdateItemQuantity(ctx, param)
 }
 
+type CartProductSku struct {
+	*ProductSku
+	Count int64
+}
+
 // GetCartList 获取购物车商品sku列表
-func (u *CartUseCase) GetCartList(ctx context.Context, param *GetCartListParam) ([]*ProductSku, error) {
+func (u *CartUseCase) GetCartList(ctx context.Context, param *GetCartListParam) ([]*CartProductSku, error) {
 	// 从购物车仓库获取购物车商品列表
 	list, err := u.cartRepo.GetCartList(ctx, param)
 	if err != nil {
@@ -36,7 +41,7 @@ func (u *CartUseCase) GetCartList(ctx context.Context, param *GetCartListParam) 
 	// 获取购物车商品列表长度
 	length := len(list)
 	// 创建一个ProductSku切片，长度为购物车商品列表长度
-	productSkus := make([]*ProductSku, 0, length)
+	productSkus := make([]*CartProductSku, 0, length)
 	// 创建一个int64类型的切片，长度为购物车商品列表长度
 	skuIds := make([]int64, 0, length)
 	// 创建一个map，key为int64类型的skuId，value为int64类型的商品数量
@@ -53,10 +58,9 @@ func (u *CartUseCase) GetCartList(ctx context.Context, param *GetCartListParam) 
 	}
 	// 遍历商品sku列表，将商品sku的价格、数量、图片添加到productSkus中
 	for _, sku := range skus {
-		productSkus = append(productSkus, &ProductSku{
-			Price: sku.Price,
-			Count: skuCountMap[sku.Id],
-			Pic:   sku.Pic,
+		productSkus = append(productSkus, &CartProductSku{
+			ProductSku: sku,
+			Count:      skuCountMap[sku.Id],
 		})
 	}
 	// 返回商品sku列表
