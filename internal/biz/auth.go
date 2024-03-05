@@ -53,11 +53,16 @@ type MyClaims struct {
 	jwtv5.RegisteredClaims
 }
 
-func (u *AuthUseCase) GenerateToken(memberId int64) (string, error) {
+func (u *AuthUseCase) GenerateToken(memberId int64, username string) (string, error) {
 	claims := MyClaims{
-		memberId,
-		jwtv5.RegisteredClaims{
+		MemberId: memberId,
+		RegisteredClaims: jwtv5.RegisteredClaims{
+			Issuer:    "kratos-admin",
+			Subject:   username,
+			IssuedAt:  jwtv5.NewNumericDate(time.Now()),
+			NotBefore: jwtv5.NewNumericDate(time.Now()),
 			ExpiresAt: jwtv5.NewNumericDate(time.Now().Add(time.Hour * 24)),
+			Audience:  jwtv5.ClaimStrings{"kratos-admin", "kratos-admin-api"},
 		},
 	}
 	token := jwtv5.NewWithClaims(jwtv5.SigningMethodHS256, claims)
