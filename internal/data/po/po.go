@@ -7,25 +7,28 @@ import (
 
 // PmsProductCategory 商品分类
 type PmsProductCategory struct {
-	Id           int64  `gorm:"column:id;type:bigint;primaryKey;" json:"id"`
-	ParentId     int64  `gorm:"column:parent_id;type:bigint;comment:上机分类的编号：0表示一级分类;not null;" json:"parent_id"` // 上机分类的编号：0表示一级分类
-	Name         string `gorm:"column:name;type:varchar(64);not null;" json:"name"`
-	Level        int32  `gorm:"column:level;type:int(1);comment:分类级别：0->1级；1->2级;not null;" json:"level"` // 分类级别：0->1级；1->2级
-	ProductCount int32  `gorm:"column:product_count;type:int;not null;" json:"product_count"`
-	ProductUnit  string `gorm:"column:product_unit;type:varchar(64);not null;" json:"product_unit"`
-	NavStatus    int32  `gorm:"column:nav_status;type:int(1);comment:是否显示在导航栏：0->不显示；1->显示;not null;" json:"nav_status"` // 是否显示在导航栏：0->不显示；1->显示
-	ShowStatus   int32  `gorm:"column:show_status;type:int(1);comment:显示状态：0->不显示；1->显示;not null;" json:"show_status"`   // 显示状态：0->不显示；1->显示
-	Sort         int32  `gorm:"column:sort;type:int;not null;" json:"sort"`
-	Icon         string `gorm:"column:icon;type:varchar(255);comment:图标;not null;" json:"icon"` // 图标
-	Keywords     string `gorm:"column:keywords;type:varchar(255);not null;" json:"keywords"`
-	Description  string `gorm:"column:description;type:text;comment:描述;" json:"description"` // 描述
+	Id           int64                 `gorm:"column:id;type:bigint;primaryKey;" json:"id"`
+	ParentId     int64                 `gorm:"column:parent_id;type:bigint;comment:上机分类的编号：0表示一级分类;not null;" json:"parent_id"` // 上机分类的编号：0表示一级分类
+	Name         string                `gorm:"column:name;type:varchar(64);not null;" json:"name"`
+	Level        int32                 `gorm:"column:level;type:int(1);comment:分类级别：0: 1级；1: 2级;not null;" json:"level"` // 分类级别：0: 1级；1: 2级
+	ProductCount int32                 `gorm:"column:product_count;type:int;not null;" json:"product_count"`
+	ProductUnit  string                `gorm:"column:product_unit;type:varchar(64);not null;" json:"product_unit"`
+	NavStatus    int32                 `gorm:"column:nav_status;type:int(1);comment:是否显示在导航栏：0: 不显示；1: 显示;not null;" json:"nav_status"` // 是否显示在导航栏：0: 不显示；1: 显示
+	ShowStatus   int32                 `gorm:"column:show_status;type:int(1);comment:显示状态：0: 不显示；1: 显示;not null;" json:"show_status"`   // 显示状态：0: 不显示；1: 显示
+	Sort         int32                 `gorm:"column:sort;type:int;not null;" json:"sort"`
+	Icon         string                `gorm:"column:icon;type:varchar(255);comment:图标;not null;" json:"icon"` // 图标
+	Keywords     JsonArray[string]     `gorm:"column:keywords;type:json;not null;" json:"keywords"`
+	Description  string                `gorm:"column:description;type:text;comment:描述;" json:"description"` // 描述
+	CreateTime   time.Time             `gorm:"column:create_time;type:timestamp;comment:创建时间;not null;" json:"create_time"`
+	UpdateTime   time.Time             `gorm:"column:update_time;type:timestamp;comment:更新时间;not null;" json:"update_time"`
+	DeletedAt    soft_delete.DeletedAt `gorm:"column:deleted_at;type:timestamp;comment:删除时间;not null;" json:"deleted_at"`
 }
 
 // PmsProduct 商品
 type PmsProduct struct {
 	Id                         int64                 `gorm:"column:id;type:bigint;primaryKey;" json:"id"`
 	BrandId                    int64                 `gorm:"column:brand_id;type:bigint;comment:品牌id;not null;" json:"brand_id"`                                                                      // 品牌id
-	ProductCategoryId          int64                 `gorm:"column:product_category_id;type:bigint;comment:商品分类id;not null;" json:"product_category_id"`                                              // 商品分类id
+	ProductCategoryIds         JsonArray[int64]      `gorm:"column:product_category_ids;type:json;comment:商品分类id字符串;not null;" json:"product_category_ids"`                                           // 商品分类id字符串
 	FreightTemplateId          int64                 `gorm:"column:freight_template_id;type:bigint;comment:商品运费模板id;not null;" json:"freight_template_id"`                                            // 商品运费模板id
 	ProductAttributeCategoryId int64                 `gorm:"column:product_attribute_category_id;type:bigint;comment:商品属性分类id;not null;" json:"product_attribute_category_id"`                        // 商品属性分类id
 	Name                       string                `gorm:"column:name;type:varchar(64);comment:商品名称;not null;" json:"name"`                                                                         // 商品名称
@@ -44,15 +47,15 @@ type PmsProduct struct {
 	TotalStock                 int32                 `gorm:"column:total_stock;type:int;comment:库存;not null;" json:"total_stock"`                                                                     // 库存
 	Unit                       string                `gorm:"column:unit;type:varchar(16);comment:单位;not null;" json:"unit"`                                                                           // 单位
 	Weight                     float64               `gorm:"column:weight;type:decimal(10, 2);comment:商品重量，默认为克;not null;" json:"weight"`                                                             // 商品重量，默认为克
-	PreviewStatus              int32                 `gorm:"column:preview_status;type:int(1);comment:是否为预告商品：0->不是；1->是;not null;" json:"preview_status"`                                            // 是否为预告商品：0->不是；1->是
-	PublishStatus              int32                 `gorm:"column:publish_status;type:int(1);comment:上架状态：0->下架；1->上架;not null;" json:"publish_status"`                                              // 上架状态：0->下架；1->上架
-	NewStatus                  int32                 `gorm:"column:new_status;type:int(1);comment:新品状态:0->不是新品；1->新品;not null;" json:"new_status"`                                                    // 新品状态:0->不是新品；1->新品
-	RecommendStatus            int32                 `gorm:"column:recommend_status;type:int(1);comment:推荐状态；0->不推荐；1->推荐;not null;" json:"recommend_status"`                                         // 推荐状态；0->不推荐；1->推荐
-	VerifyStatus               int32                 `gorm:"column:verify_status;type:int(1);comment:审核状态：0->未审核；1->审核通过;not null;" json:"verify_status"`                                             // 审核状态：0->未审核；1->审核通过
-	ServiceIds                 string                `gorm:"column:service_ids;type:varchar(64);comment:以逗号分割的产品服务：1->无忧退货；2->快速退款；3->免费包邮;not null;" json:"service_ids"`                             // 以逗号分割的产品服务：1->无忧退货；2->快速退款；3->免费包邮
-	Keywords                   string                `gorm:"column:keywords;type:varchar(255);comment:搜索关键字;not null;" json:"keywords"`                                                               // 搜索关键字
+	PreviewStatus              int8                  `gorm:"column:preview_status;type:int(1);comment:是否为预告商品：0: 不是；1: 是;not null;" json:"preview_status"`                                            // 是否为预告商品：0: 不是；1: 是
+	PublishStatus              int8                  `gorm:"column:publish_status;type:int(1);comment:上架状态：0: 下架；1: 上架;not null;" json:"publish_status"`                                              // 上架状态：0: 下架；1: 上架
+	NewStatus                  int8                  `gorm:"column:new_status;type:int(1);comment:新品状态:0: 不是新品；1: 新品;not null;" json:"new_status"`                                                    // 新品状态:0: 不是新品；1: 新品
+	RecommendStatus            int8                  `gorm:"column:recommend_status;type:int(1);comment:推荐状态；0: 不推荐；1: 推荐;not null;" json:"recommend_status"`                                         // 推荐状态；0: 不推荐；1: 推荐
+	VerifyStatus               int8                  `gorm:"column:verify_status;type:int(1);comment:审核状态：0: 未审核；1: 审核通过;not null;" json:"verify_status"`                                             // 审核状态：0: 未审核；1: 审核通过
+	ServiceIds                 JsonArray[int64]      `gorm:"column:service_ids;type:json;comment:以逗号分割的产品服务：1:无忧退货；2:快速退款；3:免费包邮;not null;" json:"service_ids"`                                       // 以逗号分割的产品服务：1: 无忧退货；2: 快速退款；3: 免费包邮
+	Keywords                   JsonArray[string]     `gorm:"column:keywords;type:json;comment:搜索关键字;not null;" json:"keywords"`                                                                       // 搜索关键字
 	Note                       string                `gorm:"column:note;type:varchar(255);comment:备注;not null;" json:"note"`                                                                          // 备注
-	AlbumPics                  string                `gorm:"column:album_pics;type:varchar(255);comment:画册图片，连产品图片限制为5张，以逗号分割;not null;" json:"album_pics"`                                           // 画册图片，连产品图片限制为5张，以逗号分割
+	AlbumPics                  JsonArray[string]     `gorm:"column:album_pics;type:json;comment:画册图片，连产品图片限制为5张，以逗号分割;not null;" json:"album_pics"`                                                   // 画册图片，连产品图片限制为5张，以逗号分割
 	DetailTitle                string                `gorm:"column:detail_title;type:varchar(255);comment:详情标题;not null;" json:"detail_title"`                                                        // 详情标题
 	DetailDesc                 string                `gorm:"column:detail_desc;type:text;comment:详情描述;not null;" json:"detail_desc"`                                                                  // 详情描述
 	DetailHtml                 string                `gorm:"column:detail_html;type:text;comment:产品详情网页内容;not null;" json:"detail_html"`                                                              // 产品详情网页内容
@@ -60,10 +63,10 @@ type PmsProduct struct {
 	PromotionStartTime         time.Time             `gorm:"column:promotion_start_time;type:datetime;comment:促销开始时间;not null;" json:"promotion_start_time"`                                          // 促销开始时间
 	PromotionEndTime           time.Time             `gorm:"column:promotion_end_time;type:datetime;comment:促销结束时间;not null;" json:"promotion_end_time"`                                              // 促销结束时间
 	PromotionPerLimit          int32                 `gorm:"column:promotion_per_limit;type:int;comment:活动限购数量;not null;" json:"promotion_per_limit"`                                                 // 活动限购数量
-	PromotionType              int32                 `gorm:"column:promotion_type;type:int(1);comment:促销类型：0->没有促销使用原价;1->使用促销价；2->使用会员价；3->使用阶梯价格；4->使用满减价格；5->限时购;not null;" json:"promotion_type"` // 促销类型：0->没有促销使用原价;1->使用促销价；2->使用会员价；3->使用阶梯价格；4->使用满减价格；5->限时购
+	PromotionType              int8                  `gorm:"column:promotion_type;type:int(1);comment:促销类型：0: 没有促销使用原价;1: 使用促销价；2: 使用会员价；3: 使用阶梯价格；4: 使用满减价格；5: 限时购;not null;" json:"promotion_type"` // 促销类型：0: 没有促销使用原价;1: 使用促销价；2: 使用会员价；3: 使用阶梯价格；4: 使用满减价格；5: 限时购
 	BrandName                  string                `gorm:"column:brand_name;type:varchar(255);comment:品牌名称;not null;" json:"brand_name"`                                                            // 品牌名称
 	ProductCategoryName        string                `gorm:"column:product_category_name;type:varchar(255);comment:商品分类名称;not null;" json:"product_category_name"`                                    // 商品分类名称
-	ProductCategoryIdArray     []int64               `gorm:"column:product_category_id_array;type:json;comment:商品分类id字符串;not null;" json:"product_category_id_array"`                                 // 商品分类id字符串
+	Skus                       []*ProductSku         `gorm:"foreignKey:ProductId;references:Id" json:"skus"`
 	CreatedAt                  time.Time             `gorm:"column:created_at;type:datetime;comment:创建时间;not null;" json:"created_at"`
 	UpdatedAt                  time.Time             `gorm:"column:updated_at;type:datetime;comment:更新时间;not null;" json:"updated_at"`
 	DeletedAt                  soft_delete.DeletedAt `gorm:"softDelete:nano,DeletedAtField:DeletedAt;column:deleted_at;comment:删除时间;not null;" json:"deleted_at"`
@@ -71,18 +74,28 @@ type PmsProduct struct {
 
 // ProductSku 商品sku
 type ProductSku struct {
-	Id        int64                 `gorm:"column:id;type:bigint;primaryKey;" json:"id"`                  // sku id
-	ProductId int64                 `gorm:"column:product_id;type:bigint;not null;" json:"product_id"`    // 商品id
-	SkuCode   string                `gorm:"column:sku_code;type:varchar(64);not null;" json:"sku_code"`   // sku编码
-	Specs     string                `gorm:"column:specs;type:json;comment:规格;not null;" json:"specs"`     // 规格
-	Price     float64               `gorm:"column:price;type:decimal(10,2);not null;" json:"price"`       // 价格
-	Pic       string                `gorm:"column:pic;type:varchar(255);comment:图片;not null;" json:"pic"` // sku图片
-	Stock     int32                 `gorm:"column:stock;type:int;comment:库存;not null;" json:"stock"`      // 库存
-	StockWarn int32                 `gorm:"column:stock_warn;type:int;comment:库存预警值;not null;" json:"stock_warn"`
-	Sales     int32                 `gorm:"column:sales;type:int;comment:销量;not null;" json:"sales"` // 销量
-	CreatedAt time.Time             `gorm:"column:created_at;type:datetime;comment:创建时间;not null;" json:"created_at"`
-	UpdatedAt time.Time             `gorm:"column:updated_at;type:datetime;comment:更新时间;not null;" json:"updated_at"`
-	DeletedAt soft_delete.DeletedAt `gorm:"softDelete:nano,DeletedAtField:DeletedAt;column:deleted_at;comment:删除时间;not null;" json:"deleted_at"`
+	Id             int64                 `gorm:"column:id;type:bigint;primaryKey;" json:"id"`                                                         // sku id
+	ProductId      int64                 `gorm:"column:product_id;type:bigint;not null;" json:"product_id"`                                           // 商品id
+	SkuCode        string                `gorm:"column:sku_code;type:varchar(64);not null;" json:"sku_code"`                                          // sku编码
+	Name           string                `gorm:"column:name;type:varchar(255);not null;" json:"name"`                                                 // sku名称
+	Attributes     JsonArray[Attribute]  `gorm:"column:attributes;type:json;comment:规格;not null;" json:"attributes"`                                  // 属性数据对应的json{"key":"value"},只有key有可能重复
+	Price          float64               `gorm:"column:price;type:decimal(10,2);not null;" json:"price"`                                              // 价格
+	PromotionPrice float64               `gorm:"column:promotion_price;type:decimal(10,2);not null;" json:"promotion_price"`                          // 促销价格
+	Pic            string                `gorm:"column:pic;type:varchar(255);comment:图片;not null;" json:"pic"`                                        // sku图片
+	Stock          int32                 `gorm:"column:stock;type:int;comment:库存;not null;" json:"stock"`                                             // 库存
+	StockWarn      int32                 `gorm:"column:stock_warn;type:int;comment:库存预警值;not null;" json:"stock_warn"`                                // 库存预警值
+	Sales          int32                 `gorm:"column:sales;type:int;comment:销量;not null;" json:"sales"`                                             // 销量
+	GiftBlockStock int32                 `gorm:"column:gift_block_stock;type:int;comment:赠送库存;not null;" json:"gift_block_stock"`                     // 赠送库存
+	CreatedAt      time.Time             `gorm:"column:created_at;type:datetime;comment:创建时间;not null;" json:"created_at"`                            // 创建时间
+	UpdatedAt      time.Time             `gorm:"column:updated_at;type:datetime;comment:更新时间;not null;" json:"updated_at"`                            // 更新时间
+	DeletedAt      soft_delete.DeletedAt `gorm:"softDelete:nano,DeletedAtField:DeletedAt;column:deleted_at;comment:删除时间;not null;" json:"deleted_at"` // 删除时间
+}
+
+type Attribute struct {
+	AttributeId        int    `json:"attribute_id"`
+	AttributeName      string `json:"attribute_name"`
+	AttributeValueId   int    `json:"attribute_value_id"`
+	AttributeValueName string `json:"attribute_value_name"`
 }
 
 // PmsProductAttribute 商品属性参数表
@@ -90,15 +103,15 @@ type PmsProductAttribute struct {
 	Id                         int64  `gorm:"column:id;type:bigint;primaryKey;" json:"id"`
 	ProductAttributeCategoryId int64  `gorm:"column:product_attribute_category_id;type:bigint;not null;" json:"product_attribute_category_id"`
 	Name                       string `gorm:"column:name;type:varchar(64);not null;" json:"name"`
-	SelectType                 int32  `gorm:"column:select_type;type:int(1);comment:属性选择类型：0->唯一；1->单选；2->多选;not null;" json:"select_type"`         // 属性选择类型：0->唯一；1->单选；2->多选
-	InputType                  int32  `gorm:"column:input_type;type:int(1);comment:属性录入方式：0->手工录入；1->从列表中选取;not null;" json:"input_type"`           // 属性录入方式：0->手工录入；1->从列表中选取
+	SelectType                 int32  `gorm:"column:select_type;type:int(1);comment:属性选择类型：0: 唯一；1: 单选；2: 多选;not null;" json:"select_type"`         // 属性选择类型：0: 唯一；1: 单选；2: 多选
+	InputType                  int32  `gorm:"column:input_type;type:int(1);comment:属性录入方式：0: 手工录入；1: 从列表中选取;not null;" json:"input_type"`           // 属性录入方式：0: 手工录入；1: 从列表中选取
 	InputList                  string `gorm:"column:input_list;type:varchar(255);comment:可选值列表，以逗号隔开;not null;" json:"input_list"`                  // 可选值列表，以逗号隔开
 	Sort                       int32  `gorm:"column:sort;type:int;comment:排序字段：最高的可以单独上传图片;not null;" json:"sort"`                                  // 排序字段：最高的可以单独上传图片
-	FilterType                 int32  `gorm:"column:filter_type;type:int(1);comment:分类筛选样式：1->普通；1->颜色;not null;" json:"filter_type"`               // 分类筛选样式：1->普通；1->颜色
-	SearchType                 int32  `gorm:"column:search_type;type:int(1);comment:检索类型；0->不需要进行检索；1->关键字检索；2->范围检索;not null;" json:"search_type"` // 检索类型；0->不需要进行检索；1->关键字检索；2->范围检索
-	RelatedStatus              int32  `gorm:"column:related_status;type:int(1);comment:相同属性产品是否关联；0->不关联；1->关联;not null;" json:"related_status"`    // 相同属性产品是否关联；0->不关联；1->关联
-	HandAddStatus              int32  `gorm:"column:hand_add_status;type:int(1);comment:是否支持手动新增；0->不支持；1->支持;not null;" json:"hand_add_status"`    // 是否支持手动新增；0->不支持；1->支持
-	Type                       int32  `gorm:"column:type;type:int(1);comment:属性的类型；0->规格；1->参数;not null;" json:"type"`                              // 属性的类型；0->规格；1->参数
+	FilterType                 int32  `gorm:"column:filter_type;type:int(1);comment:分类筛选样式：1: 普通；1: 颜色;not null;" json:"filter_type"`               // 分类筛选样式：1: 普通；1: 颜色
+	SearchType                 int32  `gorm:"column:search_type;type:int(1);comment:检索类型；0: 不需要进行检索；1: 关键字检索；2: 范围检索;not null;" json:"search_type"` // 检索类型；0: 不需要进行检索；1: 关键字检索；2: 范围检索
+	RelatedStatus              int32  `gorm:"column:related_status;type:int(1);comment:相同属性产品是否关联；0: 不关联；1: 关联;not null;" json:"related_status"`    // 相同属性产品是否关联；0: 不关联；1: 关联
+	HandAddStatus              int32  `gorm:"column:hand_add_status;type:int(1);comment:是否支持手动新增；0: 不支持；1: 支持;not null;" json:"hand_add_status"`    // 是否支持手动新增；0: 不支持；1: 支持
+	Type                       int32  `gorm:"column:type;type:int(1);comment:属性的类型；0: 规格；1: 参数;not null;" json:"type"`                              // 属性的类型；0: 规格；1: 参数
 }
 
 // PmsProductAttributeCategory 商品属性分类
