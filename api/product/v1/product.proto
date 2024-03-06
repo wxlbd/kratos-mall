@@ -9,7 +9,126 @@ option go_package = "kratos-admin/api/product/v1;v1";
 option java_multiple_files = true;
 option java_package = "api.product.v1";
 
+enum DisplayStatus {
+	UNKNOWN = 0;
+	SHOW = 1;
+	HIDE = 2;
+}
+
+message ProductCategory {
+	string id = 1;
+	string name = 2;
+	int32 level = 3;
+	string parent_id = 4;
+	int32 sort = 5;
+	string icon = 6;
+	string description = 7;
+	repeated string keywords = 8;
+	int32 product_count = 9;
+	string product_unit = 10;
+	DisplayStatus nav_status = 11;
+	DisplayStatus show_status = 12;
+}
+
+message CreateProductCategoryRequest {
+	ProductCategory product_category = 1;
+}
+
+message CreateProductCategoryReply {
+	string id = 1;
+}
+
+message UpdateProductCategoryRequest {
+	ProductCategory product_category = 1;
+	string product_category_id = 2;
+}
+
+message UpdateProductCategoryReply {
+}
+
+message DeleteProductCategoryRequest {
+	string product_category_id = 1;
+}
+
+message DeleteProductCategoryReply {
+}
+
+message FindProductCategoryRequest {
+	string product_category_id = 1;
+}
+
+message FindProductCategoryReply {
+	ProductCategory product_category_id = 1;
+}
+
+message FindProductCategoryListRequest {
+	int32 page_number = 1;
+	int32 page_size = 2;
+	string name = 3;
+	int32 level = 4;
+	int64 parent_id = 5;
+	DisplayStatus nav_status = 6;
+	DisplayStatus show_status = 7;
+}
+
+message FindProductCategoryListReply {
+	repeated ProductCategory product_categories = 1;
+	int32 total = 2;
+}
+
+
+message FindProductCategoryTreeRequest {
+
+}
+
+message ProductCategoryTreeNode {
+	ProductCategory product_category = 1;
+	repeated ProductCategoryTreeNode children = 2;
+}
+
+message FindProductCategoryTreeReply {
+	repeated ProductCategoryTreeNode tree = 1;
+}
+
 service Product {
+	rpc CreateProductCategory (CreateProductCategoryRequest) returns (CreateProductCategoryReply){
+		option (google.api.http) = {
+			post: "/v1/product/category"
+			body: "*"
+		};
+	}
+
+	rpc UpdateProductCategory (UpdateProductCategoryRequest) returns (UpdateProductCategoryReply){
+		option (google.api.http) = {
+			put: "/v1/product/category/{product_category_id}"
+			body: "*"
+		};
+	}
+
+	rpc DeleteProductCategory (DeleteProductCategoryRequest) returns (DeleteProductCategoryReply){
+		option (google.api.http) = {
+			delete: "/v1/product/category/{product_category_id}"
+		};
+	}
+
+	rpc FindProductCategory (FindProductCategoryRequest) returns (FindProductCategoryReply){
+		option (google.api.http) = {
+			get: "/v1/product/category/{product_category_id}"
+		};
+	}
+
+	rpc FindProductCategoryList (FindProductCategoryListRequest) returns (FindProductCategoryListReply){
+		option (google.api.http) = {
+			get: "/v1/product/category"
+		};
+	}
+
+	rpc FindProductCategoryTree (FindProductCategoryTreeRequest) returns (FindProductCategoryTreeReply){
+		option (google.api.http) = {
+			get: "/v1/product/category/tree"
+		};
+	}
+
 	// 创建商品
 	rpc CreateProduct (CreateProductRequest) returns (CreateProductReply){
 		option (google.api.http) = {
@@ -55,7 +174,6 @@ service Product {
 		};
 	}
 }
-
 message DeleteProductSkuRequest {
 	int64 product_id = 1;
 	int64 product_sku_id = 2;
@@ -190,3 +308,8 @@ message GetProductReply {}
 message ListProductRequest {
 }
 message ListProductReply {}
+
+
+service ProductService {
+
+}

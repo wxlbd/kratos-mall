@@ -28,16 +28,8 @@ const (
 )
 
 var (
-	ErrMissingJwtToken        = errors.Unauthorized(reason, "JWT token is missing")
-	ErrMissingKeyFunc         = errors.Unauthorized(reason, "keyFunc is missing")
-	ErrTokenInvalid           = errors.Unauthorized(reason, "Token is invalid")
-	ErrTokenExpired           = errors.Unauthorized(reason, "JWT token has expired")
-	ErrTokenParseFail         = errors.Unauthorized(reason, "Fail to parse JWT token ")
-	ErrUnSupportSigningMethod = errors.Unauthorized(reason, "Wrong signing method")
-	ErrWrongContext           = errors.Unauthorized(reason, "Wrong context for middleware")
-	ErrNeedTokenProvider      = errors.Unauthorized(reason, "Token provider is missing")
-	ErrSignToken              = errors.Unauthorized(reason, "Can not sign token.Is the key correct?")
-	ErrGetKey                 = errors.Unauthorized(reason, "Can not get key while signing token")
+	ErrMissingJwtToken = errors.Unauthorized(reason, "JWT token is missing")
+	ErrWrongContext    = errors.Unauthorized(reason, "Wrong context for middleware")
 )
 
 type AuthUseCase struct {

@@ -2,6 +2,7 @@ package biz
 
 import (
 	"context"
+	v1 "kratos-admin/api/product/v1"
 	"time"
 )
 
@@ -136,31 +137,17 @@ type ProductRepo interface {
 // ProductCategoryRepo 商品分类仓储接口
 type ProductCategoryRepo interface {
 	// FindProductCategoryById 查询商品分类
-	FindProductCategoryById(ctx context.Context, id int64) (*ProductCategory, error)
+	FindProductCategoryById(ctx context.Context, id int64) (*v1.ProductCategory, error)
 	// FindProductCategoryList 查询商品分类列表
-	FindProductCategoryList(ctx context.Context, param *ListProductCategoryParam) (total int64, list []*ProductCategory, err error)
+	FindProductCategoryList(ctx context.Context, param *v1.FindProductCategoryListRequest) (reply *v1.FindProductCategoryListReply, err error)
 	// CreateProductCategory 创建商品分类
-	CreateProductCategory(ctx context.Context, param *CreateProductCategoryParam) (int64, error)
+	CreateProductCategory(ctx context.Context, param *v1.CreateProductCategoryRequest) (int64, error)
 	// UpdateProductCategory 更新商品分类
-	UpdateProductCategory(ctx context.Context, param *UpdateProductCategoryParam) error
+	UpdateProductCategory(ctx context.Context, param *v1.UpdateProductCategoryRequest) error
 	// DeleteProductCategory 删除商品分类
 	DeleteProductCategory(ctx context.Context, id int64) error
 	// FindProductCategoryListByParentId 查询商品分类列表
-	FindProductCategoryListByParentId(ctx context.Context, parentId int64) ([]*ProductCategory, error)
+	FindProductCategoryListByParentId(ctx context.Context, parentId int64) ([]*v1.ProductCategory, error)
 	// FindProductCategoryTree 获取商品分类树形结构
-	FindProductCategoryTree(ctx context.Context) ([]*TreeNode, error)
-}
-
-type TreeNode struct {
-	*ProductCategory
-	Children []*TreeNode
-}
-
-type ListProductCategoryParam struct {
-	*Page
-	Name       string
-	ParentId   int64
-	Level      int
-	ShowStatus DisplayStatus
-	NavStatus  DisplayStatus
+	FindProductCategoryTree(ctx context.Context) ([]*v1.ProductCategoryTreeNode, error)
 }
