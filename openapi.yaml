@@ -3,8 +3,720 @@
 
 openapi: 3.0.3
 info:
-    title: ""
+    title: Product API
     version: 0.0.1
-paths: {}
+paths:
+    /v1/product:
+        get:
+            tags:
+                - Product
+            description: 获取商品列表
+            operationId: Product_ListProduct
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListProductReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - Product
+            description: 创建商品
+            operationId: Product_CreateProduct
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateProductRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateProductReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/product/category:
+        get:
+            tags:
+                - Product
+            operationId: Product_FindProductCategoryList
+            parameters:
+                - name: pageNumber
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: name
+                  in: query
+                  schema:
+                    type: string
+                - name: level
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: parentId
+                  in: query
+                  schema:
+                    type: string
+                - name: navStatus
+                  in: query
+                  schema:
+                    type: integer
+                    format: enum
+                - name: showStatus
+                  in: query
+                  schema:
+                    type: integer
+                    format: enum
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FindProductCategoryListReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - Product
+            operationId: Product_CreateProductCategory
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateProductCategoryRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateProductCategoryReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/product/category/tree:
+        get:
+            tags:
+                - Product
+            operationId: Product_FindProductCategoryTree
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FindProductCategoryTreeReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/product/category/{productCategoryId}:
+        get:
+            tags:
+                - Product
+            operationId: Product_FindProductCategory
+            parameters:
+                - name: productCategoryId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FindProductCategoryReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        put:
+            tags:
+                - Product
+            operationId: Product_UpdateProductCategory
+            parameters:
+                - name: productCategoryId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateProductCategoryRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateProductCategoryReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - Product
+            operationId: Product_DeleteProductCategory
+            parameters:
+                - name: productCategoryId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteProductCategoryReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/product/{productId}:
+        get:
+            tags:
+                - Product
+            description: 获取商品详情
+            operationId: Product_GetProduct
+            parameters:
+                - name: productId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetProductReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        put:
+            tags:
+                - Product
+            description: 更新商品
+            operationId: Product_UpdateProduct
+            parameters:
+                - name: productId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateProductRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateProductReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - Product
+            description: 删除商品
+            operationId: Product_DeleteProduct
+            parameters:
+                - name: productId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteProductReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/product/{productId}/sku:
+        get:
+            tags:
+                - Product
+            description: 获取商品sku列表
+            operationId: Product_ListProductSku
+            parameters:
+                - name: productId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListProductSkuReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/product/{productId}/sku/{productSkuId}:
+        delete:
+            tags:
+                - Product
+            description: 删除商品sku
+            operationId: Product_DeleteProductSku
+            parameters:
+                - name: productId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: productSkuId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteProductSkuReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
 components:
-    schemas: {}
+    schemas:
+        CreateProductCategoryReply:
+            type: object
+            properties:
+                id:
+                    type: string
+        CreateProductCategoryRequest:
+            type: object
+            properties:
+                productCategory:
+                    $ref: '#/components/schemas/ProductCategory'
+        CreateProductReply:
+            type: object
+            properties:
+                ProductId:
+                    type: string
+        CreateProductRequest:
+            type: object
+            properties:
+                productCategoryId:
+                    type: array
+                    items:
+                        type: string
+                brandId:
+                    type: string
+                flashPromotionId:
+                    type: string
+                productAttributeCategoryId:
+                    type: string
+                name:
+                    type: string
+                pic:
+                    type: string
+                productSn:
+                    type: string
+                publishStatus:
+                    type: string
+                newStatus:
+                    type: string
+                recommendStatus:
+                    type: string
+                verifyStatus:
+                    type: string
+                sort:
+                    type: string
+                totalSales:
+                    type: string
+                price:
+                    type: number
+                    format: double
+                promotionPrice:
+                    type: number
+                    format: double
+                giftGrowth:
+                    type: string
+                giftPoint:
+                    type: string
+                usePointLimit:
+                    type: string
+                subTitle:
+                    type: string
+                description:
+                    type: string
+                originalPrice:
+                    type: number
+                    format: double
+                stock:
+                    type: string
+                stockWarn:
+                    type: string
+                unit:
+                    type: string
+                weight:
+                    type: number
+                    format: double
+                previewStatus:
+                    type: string
+                serviceIds:
+                    type: array
+                    items:
+                        type: string
+                keywords:
+                    type: array
+                    items:
+                        type: string
+                note:
+                    type: string
+                albumPics:
+                    type: array
+                    items:
+                        type: string
+                detailTitle:
+                    type: string
+                detailDesc:
+                    type: string
+                detailHtml:
+                    type: string
+                detailMobileHtml:
+                    type: string
+                promotionStartTime:
+                    type: string
+                promotionEndTime:
+                    type: string
+                promotionPerLimit:
+                    type: string
+                promotionType:
+                    type: string
+                brandName:
+                    type: string
+                productCategoryName:
+                    type: string
+                skuList:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Sku'
+        DeleteProductCategoryReply:
+            type: object
+            properties: {}
+        DeleteProductReply:
+            type: object
+            properties: {}
+        DeleteProductSkuReply:
+            type: object
+            properties: {}
+        FindProductCategoryListReply:
+            type: object
+            properties:
+                productCategories:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ProductCategory'
+                total:
+                    type: integer
+                    format: int32
+        FindProductCategoryReply:
+            type: object
+            properties:
+                productCategoryId:
+                    $ref: '#/components/schemas/ProductCategory'
+        FindProductCategoryTreeReply:
+            type: object
+            properties:
+                tree:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ProductCategoryTreeNode'
+        GetProductReply:
+            type: object
+            properties: {}
+        GoogleProtobufAny:
+            type: object
+            properties:
+                '@type':
+                    type: string
+                    description: The type of the serialized message.
+            additionalProperties: true
+            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        ListProductReply:
+            type: object
+            properties: {}
+        ListProductSkuReply:
+            type: object
+            properties:
+                sku:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Sku'
+        ProductCategory:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                level:
+                    type: integer
+                    format: int32
+                parentId:
+                    type: string
+                sort:
+                    type: integer
+                    format: int32
+                icon:
+                    type: string
+                description:
+                    type: string
+                keywords:
+                    type: array
+                    items:
+                        type: string
+                productCount:
+                    type: integer
+                    format: int32
+                productUnit:
+                    type: string
+                navStatus:
+                    type: integer
+                    format: enum
+                showStatus:
+                    type: integer
+                    format: enum
+        ProductCategoryTreeNode:
+            type: object
+            properties:
+                productCategory:
+                    $ref: '#/components/schemas/ProductCategory'
+                children:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ProductCategoryTreeNode'
+        Sku:
+            type: object
+            properties:
+                skuCode:
+                    type: string
+                price:
+                    type: number
+                    format: float
+                stock:
+                    type: string
+                stockWarn:
+                    type: string
+                pic:
+                    type: string
+                sales:
+                    type: string
+                promotionPrice:
+                    type: number
+                    format: float
+                giftBlockStock:
+                    type: string
+                skuName:
+                    type: string
+                attributeData:
+                    type: string
+        Status:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+                    format: int32
+                message:
+                    type: string
+                    description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+                details:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/GoogleProtobufAny'
+                    description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+            description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        UpdateProductCategoryReply:
+            type: object
+            properties: {}
+        UpdateProductCategoryRequest:
+            type: object
+            properties:
+                productCategory:
+                    $ref: '#/components/schemas/ProductCategory'
+                productCategoryId:
+                    type: string
+        UpdateProductReply:
+            type: object
+            properties: {}
+        UpdateProductRequest:
+            type: object
+            properties:
+                productId:
+                    type: string
+                productCategoryId:
+                    type: array
+                    items:
+                        type: string
+                brandId:
+                    type: string
+                flashPromotionId:
+                    type: string
+                productAttributeCategoryId:
+                    type: string
+                name:
+                    type: string
+                pic:
+                    type: string
+                productSn:
+                    type: string
+                publishStatus:
+                    type: string
+                newStatus:
+                    type: string
+                recommendStatus:
+                    type: string
+                verifyStatus:
+                    type: string
+                sort:
+                    type: string
+                totalSales:
+                    type: string
+                price:
+                    type: number
+                    format: double
+                promotionPrice:
+                    type: number
+                    format: double
+                giftGrowth:
+                    type: string
+                giftPoint:
+                    type: string
+                usePointLimit:
+                    type: string
+                subTitle:
+                    type: string
+                description:
+                    type: string
+                originalPrice:
+                    type: number
+                    format: double
+                stock:
+                    type: string
+                stockWarn:
+                    type: string
+                unit:
+                    type: string
+                weight:
+                    type: number
+                    format: double
+                previewStatus:
+                    type: string
+                serviceIds:
+                    type: array
+                    items:
+                        type: string
+                keywords:
+                    type: array
+                    items:
+                        type: string
+                note:
+                    type: string
+                albumPics:
+                    type: array
+                    items:
+                        type: string
+                detailTitle:
+                    type: string
+                detailDesc:
+                    type: string
+                detailHtml:
+                    type: string
+                detailMobileHtml:
+                    type: string
+                promotionStartTime:
+                    type: string
+                promotionEndTime:
+                    type: string
+                promotionPerLimit:
+                    type: string
+                promotionType:
+                    type: string
+                brandName:
+                    type: string
+                productCategoryName:
+                    type: string
+                skuList:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Sku'
+tags:
+    - name: Product
