@@ -151,3 +151,16 @@ type ProductCategoryRepo interface {
 	// FindProductCategoryTree 获取商品分类树形结构
 	FindProductCategoryTree(ctx context.Context) ([]*v1.ProductCategoryTreeNode, error)
 }
+
+type ProductAttributeRepo interface {
+	// FindProductAttributeById 查询商品属性
+	FindProductAttributeById(ctx context.Context, id int64) (*v1.ProductAttribute, error)
+	// FindProductAttributeList 查询商品属性列表
+	FindProductAttributeList(ctx context.Context, param *v1.FindProductAttributeListRequest) (reply *v1.FindProductAttributeListReply, err error)
+	// CreateProductAttribute 创建商品属性
+	CreateProductAttribute(ctx context.Context, param *v1.CreateProductAttributeRequest) (int64, error)
+	// UpdateProductAttribute 更新商品属性
+	UpdateProductAttribute(ctx context.Context, param *v1.UpdateProductAttributeRequest) error
+	// DeleteProductAttribute 删除商品属性
+	DeleteProductAttribute(ctx context.Context, id int64) error
+}

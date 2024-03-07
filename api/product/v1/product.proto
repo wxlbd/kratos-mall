@@ -89,15 +89,150 @@ message ProductCategoryTreeNode {
 message FindProductCategoryTreeReply {
 	repeated ProductCategoryTreeNode tree = 1;
 }
+// 商品属性类型
+enum ProductAttributeType {
+	ProductAttributeTypeUnknown = 0;
+	ProductAttributeTypeSpecification = 1; // 规格
+	ProductAttributeTypeParam = 2;// 参数
+}
+// 商品属性筛选类型
+enum ProductAttributeFilterType {
+	ProductAttributeFilterTypeUnknown = 0;
+	ProductAttributeFilterTypeNormal = 1;// 普通
+	ProductAttributeFilterTypeColor = 2;// 颜色
+}
+// 商品属性检索类型
+enum ProductAttributeSearchType {
+	ProductAttributeSearchTypeUnknown = 0;
+	ProductAttributeSearchTypeNone = 1;// 不需要检索
+	ProductAttributeSearchTypeKeyword = 2;// 关键字检索
+	ProductAttributeSearchTypeRange = 3;// 范围检索
+}
+// 属性可选类型
+enum ProductAttributeSelectType {
+	ProductAttributeSelectTypeUnknown = 0;
+	ProductAttributeSelectTypeUnique = 1;// 唯一
+	ProductAttributeSelectTypeSingle = 2;// 单选
+	ProductAttributeSelectTypeMultiple = 3;// 多选
+}
+// 属性录入方式
+enum ProductAttributeInputType {
+	ProductAttributeInputTypeUnknown = 0;
+	ProductAttributeInputTypeHand = 1;// 手动录入
+	ProductAttributeInputTypeListSelect = 2;// 列表选取
+}
+// 相同属性产品是否关联
+enum ProductAttributeRelatedType {
+	ProductAttributeRelatedTypeUnknown = 0;
+	ProductAttributeRelatedTypeNo = 1;// 不关联
+	ProductAttributeRelatedTypeYes = 2;// 关联
+}
+
+// 是否支持手动新增
+enum ProductAttributeHandAddStatus {
+	ProductAttributeHandAddStatusUnknown = 0;
+	ProductAttributeHandAddStatusNo = 1;// 不支持
+	ProductAttributeHandAddStatusYes = 2;// 支持
+}
+
+
+
+message ProductAttribute {
+	string id = 1;
+	string product_attribute_category_id = 2;
+	string name = 3;
+	ProductAttributeInputType input_type = 4;
+	repeated string input_list = 5;// 可选值
+	int32 sort = 6;
+	ProductAttributeSelectType select_type = 7;
+	ProductAttributeFilterType filter_type = 8;
+	ProductAttributeSearchType search_type = 9;
+	ProductAttributeType type = 10;
+	ProductAttributeHandAddStatus hand_add_status=11;
+	ProductAttributeRelatedType related_status = 12;
+}
+
+message CreateProductAttributeRequest {
+	ProductAttribute product_attribute = 1;
+}
+
+message CreateProductAttributeReply {
+	string id = 1;
+}
+
+message UpdateProductAttributeRequest {
+	ProductAttribute product_attribute = 1;
+	string product_attribute_id = 2;
+}
+
+message UpdateProductAttributeReply {
+}
+
+message DeleteProductAttributeRequest {
+	string product_attribute_id = 1;
+}
+
+message DeleteProductAttributeReply {
+}
+
+message FindProductAttributeRequest {
+	string product_attribute_id = 1;
+}
+
+message FindProductAttributeReply {
+	ProductAttribute product_attribute_id = 1;
+}
+
+message FindProductAttributeListRequest {
+	int32 page_number = 1;
+	int32 page_size = 2;
+	string name = 3;
+	ProductAttributeType type = 4;
+}
+
+message FindProductAttributeListReply {
+	repeated ProductAttribute product_attributes = 1;
+	int32 total = 2;
+}
 
 service Product {
+	rpc CreateProductAttribute (CreateProductAttributeRequest) returns (CreateProductAttributeReply){
+		option (google.api.http) = {
+			post: "/v1/product/attribute"
+			body: "*"
+		};
+	}
+
+	rpc UpdateProductAttribute (UpdateProductAttributeRequest) returns (UpdateProductAttributeReply){
+		option (google.api.http) = {
+			put: "/v1/product/attribute/{product_attribute_id}"
+			body: "*"
+		};
+	}
+
+	rpc DeleteProductAttribute (DeleteProductAttributeRequest) returns (DeleteProductAttributeReply){
+		option (google.api.http) = {
+			delete: "/v1/product/attribute/{product_attribute_id}"
+		};
+	}
+
+	rpc FindProductAttribute (FindProductAttributeRequest) returns (FindProductAttributeReply){
+		option (google.api.http) = {
+			get: "/v1/product/attribute/{product_attribute_id}"
+		};
+	}
+
+	rpc FindProductAttributeList (FindProductAttributeListRequest) returns (FindProductAttributeListReply){
+		option (google.api.http) = {
+			get: "/v1/product/attribute"
+		};
+	}
 	rpc CreateProductCategory (CreateProductCategoryRequest) returns (CreateProductCategoryReply){
 		option (google.api.http) = {
 			post: "/v1/product/category"
 			body: "*"
 		};
 	}
-
 	rpc UpdateProductCategory (UpdateProductCategoryRequest) returns (UpdateProductCategoryReply){
 		option (google.api.http) = {
 			put: "/v1/product/category/{product_category_id}"

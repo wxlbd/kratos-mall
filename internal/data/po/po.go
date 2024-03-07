@@ -100,18 +100,21 @@ type Attribute struct {
 
 // PmsProductAttribute 商品属性参数表
 type PmsProductAttribute struct {
-	Id                         int64  `gorm:"column:id;type:bigint;primaryKey;" json:"id"`
-	ProductAttributeCategoryId int64  `gorm:"column:product_attribute_category_id;type:bigint;not null;" json:"product_attribute_category_id"`
-	Name                       string `gorm:"column:name;type:varchar(64);not null;" json:"name"`
-	SelectType                 int32  `gorm:"column:select_type;type:int(1);comment:属性选择类型：0: 唯一；1: 单选；2: 多选;not null;" json:"select_type"`         // 属性选择类型：0: 唯一；1: 单选；2: 多选
-	InputType                  int32  `gorm:"column:input_type;type:int(1);comment:属性录入方式：0: 手工录入；1: 从列表中选取;not null;" json:"input_type"`           // 属性录入方式：0: 手工录入；1: 从列表中选取
-	InputList                  string `gorm:"column:input_list;type:varchar(255);comment:可选值列表，以逗号隔开;not null;" json:"input_list"`                  // 可选值列表，以逗号隔开
-	Sort                       int32  `gorm:"column:sort;type:int;comment:排序字段：最高的可以单独上传图片;not null;" json:"sort"`                                  // 排序字段：最高的可以单独上传图片
-	FilterType                 int32  `gorm:"column:filter_type;type:int(1);comment:分类筛选样式：1: 普通；1: 颜色;not null;" json:"filter_type"`               // 分类筛选样式：1: 普通；1: 颜色
-	SearchType                 int32  `gorm:"column:search_type;type:int(1);comment:检索类型；0: 不需要进行检索；1: 关键字检索；2: 范围检索;not null;" json:"search_type"` // 检索类型；0: 不需要进行检索；1: 关键字检索；2: 范围检索
-	RelatedStatus              int32  `gorm:"column:related_status;type:int(1);comment:相同属性产品是否关联；0: 不关联；1: 关联;not null;" json:"related_status"`    // 相同属性产品是否关联；0: 不关联；1: 关联
-	HandAddStatus              int32  `gorm:"column:hand_add_status;type:int(1);comment:是否支持手动新增；0: 不支持；1: 支持;not null;" json:"hand_add_status"`    // 是否支持手动新增；0: 不支持；1: 支持
-	Type                       int32  `gorm:"column:type;type:int(1);comment:属性的类型；0: 规格；1: 参数;not null;" json:"type"`                              // 属性的类型；0: 规格；1: 参数
+	Id                         int64                 `gorm:"column:id;type:bigint;primaryKey;" json:"id"`
+	ProductAttributeCategoryId int64                 `gorm:"column:product_attribute_category_id;type:bigint;not null;" json:"product_attribute_category_id"`
+	Name                       string                `gorm:"column:name;type:varchar(64);not null;" json:"name"`
+	SelectType                 int32                 `gorm:"column:select_type;type:int(1);comment:属性选择类型：1: 唯一；2: 单选；3: 多选;not null;" json:"select_type"`         // 属性选择类型：0: 唯一；1: 单选；2: 多选
+	InputType                  int32                 `gorm:"column:input_type;type:int(1);comment:属性录入方式：1: 手工录入；2: 从列表中选取;not null;" json:"input_type"`           // 属性录入方式：0: 手工录入；1: 从列表中选取
+	InputList                  JsonArray[string]     `gorm:"column:input_list;type:varchar(255);comment:可选值列表，以逗号隔开;not null;" json:"input_list"`                  // 可选值列表，以逗号隔开
+	Sort                       int32                 `gorm:"column:sort;type:int;comment:排序字段：最高的可以单独上传图片;not null;" json:"sort"`                                  // 排序字段：最高的可以单独上传图片
+	FilterType                 int32                 `gorm:"column:filter_type;type:int(1);comment:分类筛选样式：1: 普通；2: 颜色;not null;" json:"filter_type"`               // 分类筛选样式：1: 普通；1: 颜色
+	SearchType                 int32                 `gorm:"column:search_type;type:int(1);comment:检索类型；1: 不需要进行检索；2: 关键字检索；3: 范围检索;not null;" json:"search_type"` // 检索类型；0: 不需要进行检索；1: 关键字检索；2: 范围检索
+	RelatedStatus              int32                 `gorm:"column:related_status;type:int(1);comment:相同属性产品是否关联；1: 不关联；2: 关联;not null;" json:"related_status"`    // 相同属性产品是否关联；0: 不关联；1: 关联
+	HandAddStatus              int32                 `gorm:"column:hand_add_status;type:int(1);comment:是否支持手动新增；1: 不支持；2: 支持;not null;" json:"hand_add_status"`    // 是否支持手动新增；0: 不支持；1: 支持
+	Type                       int32                 `gorm:"column:type;type:int(1);comment:属性的类型；1: 规格；2: 参数;not null;" json:"type"`                              // 属性的类型；0: 规格；1: 参数
+	CreatedAt                  time.Time             `gorm:"column:created_at;type:datetime;comment:创建时间;not null;" json:"created_at"`                             // 创建时间
+	UpdatedAt                  time.Time             `gorm:"column:updated_at;type:datetime;comment:更新时间;not null;" json:"updated_at"`                             // 更新时间
+	DeletedAt                  soft_delete.DeletedAt `gorm:"column:deleted_at;type:soft_delete.DeletedAt;" json:"deleted_at"`
 }
 
 // PmsProductAttributeCategory 商品属性分类
@@ -124,10 +127,10 @@ type PmsProductAttributeCategory struct {
 
 // PmsProductAttributeValue 商品属性值
 type PmsProductAttributeValue struct {
-	Id                 int64  `gorm:"column:id;type:bigint;primaryKey;" json:"id"`
-	ProductId          int64  `gorm:"column:product_id;type:bigint;not null;" json:"product_id"`
-	ProductAttributeId int64  `gorm:"column:product_attribute_id;type:bigint;not null;" json:"product_attribute_id"`
-	Value              string `gorm:"column:value;type:varchar(64);comment:手动添加规格或参数的值，参数单值，规格有多个时以逗号隔开;" json:"value"` // 手动添加规格或参数的值，参数单值，规格有多个时以逗号隔开
+	Id                 int64             `gorm:"column:id;type:bigint;primaryKey;" json:"id"`
+	ProductId          int64             `gorm:"column:product_id;type:bigint;not null;" json:"product_id"`
+	ProductAttributeId int64             `gorm:"column:product_attribute_id;type:bigint;not null;" json:"product_attribute_id"`
+	Value              JsonArray[string] `gorm:"column:value;type:json;comment:手动添加规格或参数的值，参数单值，规格有多个时以逗号隔开;not null;" json:"value"` // 手动添加规格或参数的值，参数单值，规格有多个时以逗号隔开
 }
 
 // PmsProductCategoryAttributeRelation 产品的分类和属性的关系表，用于设置分类筛选条件（只支持一级分类）
