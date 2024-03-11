@@ -164,3 +164,13 @@ type ProductAttributeRepo interface {
 	// DeleteProductAttribute 删除商品属性
 	DeleteProductAttribute(ctx context.Context, id int64) error
 }
+
+// ProductAttributeValueRepo 商品属性值仓储接口
+type ProductAttributeValueRepo interface {
+	// CreateOrUpdateProductAttributeValue 创建商品属性值
+	CreateOrUpdateProductAttributeValue(ctx context.Context, param *v1.CreateOrUpdateProductAttributeValueRequest) error
+	// DeleteProductAttributeValue 删除商品属性值
+	DeleteProductAttributeValue(ctx context.Context, id int64) error
+	// FindProductAttributeValueByAttributeId 根据属性ID查询商品属性值
+	FindProductAttributeValueByAttributeId(ctx context.Context, attributeId int64) ([]*v1.ProductAttributeValue, error)
+}
