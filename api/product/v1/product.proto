@@ -136,7 +136,6 @@ enum ProductAttributeHandAddStatus {
 }
 
 
-
 message ProductAttribute {
 	string id = 1;
 	string product_attribute_category_id = 2;
@@ -195,7 +194,67 @@ message FindProductAttributeListReply {
 	int32 total = 2;
 }
 
+message ProductAttributeValue {
+	string id = 1;
+	string product_attribute_id = 2;
+	repeated string value = 3;
+	int32 sort = 4;
+}
+
+message CreateOrUpdateProductAttributeValueRequest {
+	ProductAttributeValue product_attribute_value = 1;
+}
+
+message CreateOrUpdateProductAttributeValueReply {
+	string product_attribute_value_id = 1;
+}
+
+message UpdateProductAttributeValueRequest {
+	ProductAttributeValue product_attribute_value = 1;
+	string product_attribute_value_id = 2;
+}
+
+message UpdateProductAttributeValueReply {
+
+}
+
+message DeleteProductAttributeValueRequest {
+	string product_attribute_value_id = 1;
+}
+
+message DeleteProductAttributeValueReply {
+
+}
+
+
+message FindProductAttributeValueByAttributeIdRequest {
+	string product_attribute_id = 1;
+}
+
+message FindProductAttributeValueByAttributeIdReply {
+	repeated ProductAttributeValue product_attribute_value = 1;
+}
 service Product {
+	// 创建或更新商品属性值
+	rpc CreateOrUpdateProductAttributeValue (CreateOrUpdateProductAttributeValueRequest) returns (CreateOrUpdateProductAttributeValueReply){
+		option (google.api.http) = {
+			post: "/v1/product/attribute/value"
+			body: "*"
+		};
+	}
+	// 删除商品属性值
+	rpc DeleteProductAttributeValue (DeleteProductAttributeValueRequest) returns (DeleteProductAttributeValueReply){
+		option (google.api.http) = {
+			delete: "/v1/product/attribute/value/{product_attribute_value_id}"
+		};
+	}
+	// 根据属性id获取属性值
+	rpc FindProductAttributeValueByAttributeId (FindProductAttributeValueByAttributeIdRequest) returns (FindProductAttributeValueByAttributeIdReply){
+		option (google.api.http) = {
+			get: "/v1/product/attribute/value/{product_attribute_id}"
+		};
+	}
+	// 创建商品属性
 	rpc CreateProductAttribute (CreateProductAttributeRequest) returns (CreateProductAttributeReply){
 		option (google.api.http) = {
 			post: "/v1/product/attribute"
