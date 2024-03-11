@@ -232,7 +232,7 @@ message FindProductAttributeValueByAttributeIdRequest {
 }
 
 message FindProductAttributeValueByAttributeIdReply {
-	repeated ProductAttributeValue product_attribute_value = 1;
+	repeated ProductAttributeValue product_attribute_values = 1;
 }
 service Product {
 	// 创建或更新商品属性值
