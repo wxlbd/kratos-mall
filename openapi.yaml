@@ -3,15 +3,34 @@
 
 openapi: 3.0.3
 info:
-    title: Product API
+    title: ProductService API
     version: 0.0.1
 paths:
     /v1/product:
         get:
             tags:
-                - Product
+                - ProductService
             description: 获取商品列表
-            operationId: Product_ListProduct
+            operationId: ProductService_ListProduct
+            parameters:
+                - name: pagination.pageNumber
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pagination.pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: name
+                  in: query
+                  schema:
+                    type: string
+                - name: productSn
+                  in: query
+                  schema:
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -27,9 +46,9 @@ paths:
                                 $ref: '#/components/schemas/Status'
         post:
             tags:
-                - Product
+                - ProductService
             description: 创建商品
-            operationId: Product_CreateProduct
+            operationId: ProductService_CreateProduct
             requestBody:
                 content:
                     application/json:
@@ -49,11 +68,11 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/product/attribute:
+    /v1/product/Attribute:
         get:
             tags:
-                - Product
-            operationId: Product_FindProductAttributeList
+                - ProductService
+            operationId: ProductService_FindProductAttributeList
             parameters:
                 - name: pageNumber
                   in: query
@@ -89,8 +108,9 @@ paths:
                                 $ref: '#/components/schemas/Status'
         post:
             tags:
-                - Product
-            operationId: Product_CreateProductAttribute
+                - ProductService
+            description: 创建商品属性
+            operationId: ProductService_CreateProductAttribute
             requestBody:
                 content:
                     application/json:
@@ -110,11 +130,86 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/product/attribute/{productAttributeId}:
+    /v1/product/Attribute/value:
+        post:
+            tags:
+                - ProductService
+            description: 创建或更新商品属性值
+            operationId: ProductService_CreateOrUpdateProductAttributeValue
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateOrUpdateProductAttributeValueRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateOrUpdateProductAttributeValueReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/product/Attribute/value/{productAttributeId}:
         get:
             tags:
-                - Product
-            operationId: Product_FindProductAttribute
+                - ProductService
+            description: 根据属性id获取属性值
+            operationId: ProductService_FindProductAttributeValueByAttributeId
+            parameters:
+                - name: productAttributeId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FindProductAttributeValueByAttributeIdReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/product/Attribute/value/{productAttributeValueId}:
+        delete:
+            tags:
+                - ProductService
+            description: 删除商品属性值
+            operationId: ProductService_DeleteProductAttributeValue
+            parameters:
+                - name: productAttributeValueId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteProductAttributeValueReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/product/Attribute/{productAttributeId}:
+        get:
+            tags:
+                - ProductService
+            operationId: ProductService_FindProductAttribute
             parameters:
                 - name: productAttributeId
                   in: path
@@ -136,8 +231,8 @@ paths:
                                 $ref: '#/components/schemas/Status'
         put:
             tags:
-                - Product
-            operationId: Product_UpdateProductAttribute
+                - ProductService
+            operationId: ProductService_UpdateProductAttribute
             parameters:
                 - name: productAttributeId
                   in: path
@@ -165,8 +260,8 @@ paths:
                                 $ref: '#/components/schemas/Status'
         delete:
             tags:
-                - Product
-            operationId: Product_DeleteProductAttribute
+                - ProductService
+            operationId: ProductService_DeleteProductAttribute
             parameters:
                 - name: productAttributeId
                   in: path
@@ -189,8 +284,8 @@ paths:
     /v1/product/category:
         get:
             tags:
-                - Product
-            operationId: Product_FindProductCategoryList
+                - ProductService
+            operationId: ProductService_FindProductCategoryList
             parameters:
                 - name: pageNumber
                   in: query
@@ -240,8 +335,8 @@ paths:
                                 $ref: '#/components/schemas/Status'
         post:
             tags:
-                - Product
-            operationId: Product_CreateProductCategory
+                - ProductService
+            operationId: ProductService_CreateProductCategory
             requestBody:
                 content:
                     application/json:
@@ -264,8 +359,8 @@ paths:
     /v1/product/category/tree:
         get:
             tags:
-                - Product
-            operationId: Product_FindProductCategoryTree
+                - ProductService
+            operationId: ProductService_FindProductCategoryTree
             responses:
                 "200":
                     description: OK
@@ -282,8 +377,8 @@ paths:
     /v1/product/category/{productCategoryId}:
         get:
             tags:
-                - Product
-            operationId: Product_FindProductCategory
+                - ProductService
+            operationId: ProductService_FindProductCategory
             parameters:
                 - name: productCategoryId
                   in: path
@@ -305,8 +400,8 @@ paths:
                                 $ref: '#/components/schemas/Status'
         put:
             tags:
-                - Product
-            operationId: Product_UpdateProductCategory
+                - ProductService
+            operationId: ProductService_UpdateProductCategory
             parameters:
                 - name: productCategoryId
                   in: path
@@ -334,8 +429,8 @@ paths:
                                 $ref: '#/components/schemas/Status'
         delete:
             tags:
-                - Product
-            operationId: Product_DeleteProductCategory
+                - ProductService
+            operationId: ProductService_DeleteProductCategory
             parameters:
                 - name: productCategoryId
                   in: path
@@ -355,12 +450,91 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /v1/product/sku:
+        post:
+            tags:
+                - ProductService
+            description: 创建商品sku
+            operationId: ProductService_CreateProductSku
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateProductSkuRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateProductSkuReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/product/sku/{productSkuId}:
+        put:
+            tags:
+                - ProductService
+            operationId: ProductService_UpdateProductSku
+            parameters:
+                - name: productSkuId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateProductSkuRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateProductSkuReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - ProductService
+            description: 删除商品sku
+            operationId: ProductService_DeleteProductSku
+            parameters:
+                - name: productSkuId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteProductSkuReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /v1/product/{productId}:
         get:
             tags:
-                - Product
+                - ProductService
             description: 获取商品详情
-            operationId: Product_GetProduct
+            operationId: ProductService_GetProduct
             parameters:
                 - name: productId
                   in: path
@@ -382,9 +556,9 @@ paths:
                                 $ref: '#/components/schemas/Status'
         put:
             tags:
-                - Product
+                - ProductService
             description: 更新商品
-            operationId: Product_UpdateProduct
+            operationId: ProductService_UpdateProduct
             parameters:
                 - name: productId
                   in: path
@@ -412,9 +586,9 @@ paths:
                                 $ref: '#/components/schemas/Status'
         delete:
             tags:
-                - Product
+                - ProductService
             description: 删除商品
-            operationId: Product_DeleteProduct
+            operationId: ProductService_DeleteProduct
             parameters:
                 - name: productId
                   in: path
@@ -437,9 +611,9 @@ paths:
     /v1/product/{productId}/sku:
         get:
             tags:
-                - Product
+                - ProductService
             description: 获取商品sku列表
-            operationId: Product_ListProductSku
+            operationId: ProductService_ListProductSku
             parameters:
                 - name: productId
                   in: path
@@ -459,38 +633,29 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/product/{productId}/sku/{productSkuId}:
-        delete:
-            tags:
-                - Product
-            description: 删除商品sku
-            operationId: Product_DeleteProductSku
-            parameters:
-                - name: productId
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-                - name: productSkuId
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/DeleteProductSkuReply'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
 components:
     schemas:
+        Attribute:
+            type: object
+            properties:
+                attributeId:
+                    type: string
+                attributeName:
+                    type: string
+                attributeValue:
+                    type: string
+                attributeValueId:
+                    type: string
+        CreateOrUpdateProductAttributeValueReply:
+            type: object
+            properties:
+                productAttributeValueId:
+                    type: string
+        CreateOrUpdateProductAttributeValueRequest:
+            type: object
+            properties:
+                productAttributeValue:
+                    $ref: '#/components/schemas/ProductAttributeValue'
         CreateProductAttributeReply:
             type: object
             properties:
@@ -514,12 +679,115 @@ components:
         CreateProductReply:
             type: object
             properties:
-                ProductId:
+                productId:
                     type: string
         CreateProductRequest:
             type: object
             properties:
-                productCategoryId:
+                product:
+                    $ref: '#/components/schemas/Product'
+        CreateProductSkuReply:
+            type: object
+            properties: {}
+        CreateProductSkuRequest:
+            type: object
+            properties:
+                productSku:
+                    $ref: '#/components/schemas/ProductSku'
+        DeleteProductAttributeReply:
+            type: object
+            properties: {}
+        DeleteProductAttributeValueReply:
+            type: object
+            properties: {}
+        DeleteProductCategoryReply:
+            type: object
+            properties: {}
+        DeleteProductReply:
+            type: object
+            properties: {}
+        DeleteProductSkuReply:
+            type: object
+            properties: {}
+        FindProductAttributeListReply:
+            type: object
+            properties:
+                productAttributes:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ProductAttribute'
+                total:
+                    type: integer
+                    format: int32
+        FindProductAttributeReply:
+            type: object
+            properties:
+                productAttribute:
+                    $ref: '#/components/schemas/ProductAttribute'
+        FindProductAttributeValueByAttributeIdReply:
+            type: object
+            properties:
+                productAttributeValues:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ProductAttributeValue'
+        FindProductCategoryListReply:
+            type: object
+            properties:
+                productCategories:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ProductCategory'
+                total:
+                    type: integer
+                    format: int32
+        FindProductCategoryReply:
+            type: object
+            properties:
+                productCategory:
+                    $ref: '#/components/schemas/ProductCategory'
+        FindProductCategoryTreeReply:
+            type: object
+            properties:
+                tree:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ProductCategoryTreeNode'
+        GetProductReply:
+            type: object
+            properties:
+                product:
+                    $ref: '#/components/schemas/Product'
+        GoogleProtobufAny:
+            type: object
+            properties:
+                '@type':
+                    type: string
+                    description: The type of the serialized message.
+            additionalProperties: true
+            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        ListProductReply:
+            type: object
+            properties:
+                total:
+                    type: string
+                products:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Product'
+        ListProductSkuReply:
+            type: object
+            properties:
+                productSkus:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ProductSku'
+        Product:
+            type: object
+            properties:
+                productId:
+                    type: string
+                productCategoryIds:
                     type: array
                     items:
                         type: string
@@ -535,18 +803,24 @@ components:
                     type: string
                 productSn:
                     type: string
-                publishStatus:
-                    type: string
+                listingStatus:
+                    type: integer
+                    format: enum
                 newStatus:
-                    type: string
+                    type: integer
+                    format: enum
                 recommendStatus:
-                    type: string
+                    type: integer
+                    format: enum
                 verifyStatus:
-                    type: string
+                    type: integer
+                    format: enum
                 sort:
-                    type: string
+                    type: integer
+                    format: uint32
                 totalSales:
-                    type: string
+                    type: integer
+                    format: uint32
                 price:
                     type: number
                     format: double
@@ -554,11 +828,14 @@ components:
                     type: number
                     format: double
                 giftGrowth:
-                    type: string
+                    type: integer
+                    format: uint32
                 giftPoint:
-                    type: string
+                    type: integer
+                    format: uint32
                 usePointLimit:
-                    type: string
+                    type: integer
+                    format: uint32
                 subTitle:
                     type: string
                 description:
@@ -566,17 +843,20 @@ components:
                 originalPrice:
                     type: number
                     format: double
-                stock:
-                    type: string
-                stockWarn:
-                    type: string
+                totalStock:
+                    type: integer
+                    format: uint32
+                totalWarnStock:
+                    type: integer
+                    format: uint32
                 unit:
                     type: string
                 weight:
                     type: number
                     format: double
                 previewStatus:
-                    type: string
+                    type: integer
+                    format: enum
                 serviceIds:
                     type: array
                     items:
@@ -604,9 +884,11 @@ components:
                 promotionEndTime:
                     type: string
                 promotionPerLimit:
-                    type: string
+                    type: integer
+                    format: int32
                 promotionType:
-                    type: string
+                    type: integer
+                    format: enum
                 brandName:
                     type: string
                 productCategoryName:
@@ -614,77 +896,12 @@ components:
                 skuList:
                     type: array
                     items:
-                        $ref: '#/components/schemas/Sku'
-        DeleteProductAttributeReply:
-            type: object
-            properties: {}
-        DeleteProductCategoryReply:
-            type: object
-            properties: {}
-        DeleteProductReply:
-            type: object
-            properties: {}
-        DeleteProductSkuReply:
-            type: object
-            properties: {}
-        FindProductAttributeListReply:
-            type: object
-            properties:
-                productAttributes:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/ProductAttribute'
-                total:
-                    type: integer
-                    format: int32
-        FindProductAttributeReply:
-            type: object
-            properties:
-                productAttributeId:
-                    $ref: '#/components/schemas/ProductAttribute'
-        FindProductCategoryListReply:
-            type: object
-            properties:
-                productCategories:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/ProductCategory'
-                total:
-                    type: integer
-                    format: int32
-        FindProductCategoryReply:
-            type: object
-            properties:
-                productCategoryId:
-                    $ref: '#/components/schemas/ProductCategory'
-        FindProductCategoryTreeReply:
-            type: object
-            properties:
-                tree:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/ProductCategoryTreeNode'
-        GetProductReply:
-            type: object
-            properties: {}
-        GoogleProtobufAny:
-            type: object
-            properties:
-                '@type':
+                        $ref: '#/components/schemas/ProductSku'
+                freightTemplateId:
                     type: string
-                    description: The type of the serialized message.
-            additionalProperties: true
-            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-        ListProductReply:
-            type: object
-            properties: {}
-        ListProductSkuReply:
-            type: object
-            properties:
-                sku:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/Sku'
+                tradeType:
+                    type: integer
+                    format: enum
         ProductAttribute:
             type: object
             properties:
@@ -722,6 +939,20 @@ components:
                 relatedStatus:
                     type: integer
                     format: enum
+        ProductAttributeValue:
+            type: object
+            properties:
+                id:
+                    type: string
+                productAttributeId:
+                    type: string
+                value:
+                    type: array
+                    items:
+                        type: string
+                sort:
+                    type: integer
+                    format: int32
         ProductCategory:
             type: object
             properties:
@@ -765,30 +996,39 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/ProductCategoryTreeNode'
-        Sku:
+        ProductSku:
             type: object
             properties:
-                skuCode:
+                id:
+                    type: string
+                code:
                     type: string
                 price:
                     type: number
-                    format: float
+                    format: double
                 stock:
-                    type: string
+                    type: integer
+                    format: uint32
                 stockWarn:
-                    type: string
+                    type: integer
+                    format: uint32
                 pic:
                     type: string
                 sales:
-                    type: string
+                    type: integer
+                    format: uint32
                 promotionPrice:
                     type: number
-                    format: float
+                    format: double
                 giftBlockStock:
                     type: string
-                skuName:
+                name:
                     type: string
-                attributeData:
+                attributes:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Attribute'
+                productId:
                     type: string
         Status:
             type: object
@@ -834,101 +1074,17 @@ components:
             properties:
                 productId:
                     type: string
-                productCategoryId:
-                    type: array
-                    items:
-                        type: string
-                brandId:
+                product:
+                    $ref: '#/components/schemas/Product'
+        UpdateProductSkuReply:
+            type: object
+            properties: {}
+        UpdateProductSkuRequest:
+            type: object
+            properties:
+                productSkuId:
                     type: string
-                flashPromotionId:
-                    type: string
-                productAttributeCategoryId:
-                    type: string
-                name:
-                    type: string
-                pic:
-                    type: string
-                productSn:
-                    type: string
-                publishStatus:
-                    type: string
-                newStatus:
-                    type: string
-                recommendStatus:
-                    type: string
-                verifyStatus:
-                    type: string
-                sort:
-                    type: string
-                totalSales:
-                    type: string
-                price:
-                    type: number
-                    format: double
-                promotionPrice:
-                    type: number
-                    format: double
-                giftGrowth:
-                    type: string
-                giftPoint:
-                    type: string
-                usePointLimit:
-                    type: string
-                subTitle:
-                    type: string
-                description:
-                    type: string
-                originalPrice:
-                    type: number
-                    format: double
-                stock:
-                    type: string
-                stockWarn:
-                    type: string
-                unit:
-                    type: string
-                weight:
-                    type: number
-                    format: double
-                previewStatus:
-                    type: string
-                serviceIds:
-                    type: array
-                    items:
-                        type: string
-                keywords:
-                    type: array
-                    items:
-                        type: string
-                note:
-                    type: string
-                albumPics:
-                    type: array
-                    items:
-                        type: string
-                detailTitle:
-                    type: string
-                detailDesc:
-                    type: string
-                detailHtml:
-                    type: string
-                detailMobileHtml:
-                    type: string
-                promotionStartTime:
-                    type: string
-                promotionEndTime:
-                    type: string
-                promotionPerLimit:
-                    type: string
-                promotionType:
-                    type: string
-                brandName:
-                    type: string
-                productCategoryName:
-                    type: string
-                skuList:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/Sku'
+                productSku:
+                    $ref: '#/components/schemas/ProductSku'
 tags:
-    - name: Product
+    - name: ProductService

@@ -28,3 +28,4 @@ go.work
 /.idea/modules.xml
 /.idea/protoeditor.xml
 /.idea/vcs.xml
+/.air.toml

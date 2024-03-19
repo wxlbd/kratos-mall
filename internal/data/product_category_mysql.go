@@ -2,12 +2,13 @@ package data
 
 import (
 	"context"
+	"strconv"
+
 	"gorm.io/gorm"
 	"kratos-admin/api"
 	v1 "kratos-admin/api/product/v1"
 	"kratos-admin/internal/biz"
 	"kratos-admin/internal/data/po"
-	"strconv"
 )
 
 type ProductCategoryRepo struct {
@@ -35,10 +36,10 @@ func (p *ProductCategoryRepo) FindProductCategoryList(ctx context.Context, param
 			if param.ParentId != 0 {
 				db = db.Where("parent_id = ?", param.ParentId)
 			}
-			if param.ShowStatus != v1.DisplayStatus_UNKNOWN {
+			if param.ShowStatus != v1.DisplayStatus_DISPLAY_STATUS_UNKNOWN {
 				db = db.Where("show_status = ?", param.ShowStatus)
 			}
-			if param.NavStatus != v1.DisplayStatus_UNKNOWN {
+			if param.NavStatus != v1.DisplayStatus_DISPLAY_STATUS_UNKNOWN {
 				db = db.Where("nav_status = ?", param.NavStatus)
 			}
 			return db
@@ -99,8 +100,8 @@ func (p *ProductCategoryRepo) productCategoryDtoToPo(category *v1.ProductCategor
 		NavStatus:    int32(category.NavStatus),
 		ShowStatus:   int32(category.ShowStatus),
 	}
-
 }
+
 func (p *ProductCategoryRepo) CreateProductCategory(ctx context.Context, param *v1.CreateProductCategoryRequest) (int64, error) {
 	product := p.productCategoryDtoToPo(param.ProductCategory)
 	if err := p.data.DB.WithContext(ctx).Create(product).Error; err != nil {
@@ -170,7 +171,7 @@ func (p *ProductCategoryRepo) listToTree(data map[int64]*v1.ProductCategoryTreeN
 
 func (p *ProductCategoryRepo) FindProductCategoryById(ctx context.Context, id int64) (*v1.ProductCategory, error) {
 	var productCategory po.PmsProductCategory
-	if err := p.data.DB.First(&productCategory, id).Error; err != nil {
+	if err := p.data.DB.WithContext(ctx).First(&productCategory, id).Error; err != nil {
 		return nil, api.ErrorDbError("Failed to find product category %d", id).WithCause(err)
 	}
 	return p.productCategoryPoToDto(&productCategory), nil

@@ -3,13 +3,15 @@ package biz
 import (
 	"context"
 	"fmt"
+	"strings"
+	"time"
+
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/transport"
 	jwtv5 "github.com/golang-jwt/jwt/v5"
 	"kratos-admin/api"
-	"strings"
-	"time"
+	"kratos-admin/internal/conf"
 )
 
 const (
@@ -20,7 +22,7 @@ const (
 	// bearerFormat authorization token format
 	bearerFormat string = "Bearer %s"
 
-	// authorizationKey holds the key used to store the JWT Token in the request tokenHeader.
+	// authorizationKey holds the key used to store the Jwt Token in the request tokenHeader.
 	authorizationKey string = "Authorization"
 
 	// reason holds the error reason.
@@ -28,7 +30,7 @@ const (
 )
 
 var (
-	ErrMissingJwtToken = errors.Unauthorized(reason, "JWT token is missing")
+	ErrMissingJwtToken = errors.Unauthorized(reason, "Jwt token is missing")
 	ErrWrongContext    = errors.Unauthorized(reason, "Wrong context for middleware")
 )
 
@@ -36,8 +38,8 @@ type AuthUseCase struct {
 	key string
 }
 
-func NewAuthUseCase(key string) *AuthUseCase {
-	return &AuthUseCase{key: key}
+func NewAuthUseCase(data *conf.Data) *AuthUseCase {
+	return &AuthUseCase{key: data.Jwt.Secret}
 }
 
 type MyClaims struct {

@@ -2,6 +2,9 @@ package data
 
 import (
 	"context"
+
+	v1 "kratos-admin/api/product/v1"
+
 	"gorm.io/gorm"
 	"kratos-admin/api"
 	"kratos-admin/internal/biz"
@@ -12,13 +15,36 @@ type ProductRepo struct {
 	data *Data
 }
 
+func (p *ProductRepo) CreateProductSku(ctx context.Context, sku *biz.ProductSku) (int64, error) {
+	s := p.productSkuDoToPo(sku)
+	err := p.data.DB.WithContext(ctx).Create(s).Error
+	if err != nil {
+		return 0, api.ErrorDbError("Failed to create product sku").WithCause(err)
+	}
+	return s.Id, nil
+}
+
+func (p *ProductRepo) FindProductSkuById(ctx context.Context, id int64) (*biz.ProductSku, error) {
+	var sku po.PmsProductSku
+	err := p.data.DB.WithContext(ctx).Find(&sku, id).Error
+	if err != nil {
+		return nil, api.ErrorDbError("Failed to find product sku %d", id).WithCause(err)
+	}
+	return p.productSkuPoToDo(&sku), nil
+}
+
+func NewProductRepo(data *Data) biz.ProductRepo {
+	return &ProductRepo{data: data}
+}
+
 func (p *ProductRepo) FindProductById(ctx context.Context, id int64) (*biz.Product, error) {
 	var product po.PmsProduct
-	if err := p.data.DB.First(&product, id).Error; err != nil {
+	if err := p.data.DB.WithContext(ctx).First(&product, id).Error; err != nil {
 		return nil, api.ErrorDbError("Failed to find product %d", id).WithCause(err)
 	}
 	return p.productPoToDo(&product), nil
 }
+
 func (p *ProductRepo) productPoToDo(po *po.PmsProduct) *biz.Product {
 	return &biz.Product{
 		Id:                         po.Id,
@@ -28,10 +54,10 @@ func (p *ProductRepo) productPoToDo(po *po.PmsProduct) *biz.Product {
 		Name:                       po.Name,
 		Pic:                        po.Pic,
 		ProductSn:                  po.ProductSn,
-		PublishStatus:              po.PublishStatus,
-		NewStatus:                  po.NewStatus,
-		RecommendStatus:            po.RecommendStatus,
-		VerifyStatus:               po.VerifyStatus,
+		ListingStatus:              v1.ProductListingStatus(po.ListingStatus),
+		NewStatus:                  v1.ProductNewStatus(po.NewStatus),
+		RecommendStatus:            v1.ProductRecommendStatus(po.RecommendStatus),
+		VerifyStatus:               v1.ProductVerifyStatus(po.VerifyStatus),
 		Sort:                       po.Sort,
 		TotalSales:                 po.TotalSales,
 		Price:                      po.Price,
@@ -42,14 +68,14 @@ func (p *ProductRepo) productPoToDo(po *po.PmsProduct) *biz.Product {
 	}
 }
 
-func (p *ProductRepo) productSkuPoToDo(sku *po.ProductSku) *biz.ProductSku {
+func (p *ProductRepo) productSkuPoToDo(sku *po.PmsProductSku) *biz.ProductSku {
 	attributes := make([]biz.Attribute, 0, len(sku.Attributes))
 	for _, attr := range sku.Attributes {
 		attributes = append(attributes, biz.Attribute{
-			AttributeId:        attr.AttributeId,
-			AttributeName:      attr.AttributeName,
-			AttributeValueId:   attr.AttributeValueId,
-			AttributeValueName: attr.AttributeValueName,
+			AttributeId:      attr.AttributeId,
+			AttributeName:    attr.AttributeName,
+			AttributeValueId: attr.AttributeValueId,
+			AttributeValue:   attr.AttributeValue,
 		})
 	}
 	return &biz.ProductSku{
@@ -61,23 +87,22 @@ func (p *ProductRepo) productSkuPoToDo(sku *po.ProductSku) *biz.ProductSku {
 		Pic:            sku.Pic,
 		Sales:          sku.Sales,
 		PromotionPrice: sku.PromotionPrice,
-		GiftBlockStock: sku.GiftBlockStock,
 		Name:           sku.Name,
 		Attributes:     attributes,
 	}
 }
 
 func (p *ProductRepo) FindProductSkuBySkuId(ctx context.Context, skuId int64) (*biz.ProductSku, error) {
-	var productSku po.ProductSku
-	if err := p.data.DB.First(&productSku, skuId).Error; err != nil {
+	var productSku po.PmsProductSku
+	if err := p.data.DB.WithContext(ctx).First(&productSku, skuId).Error; err != nil {
 		return nil, api.ErrorDbError("Failed to find product sku %d", skuId).WithCause(err)
 	}
 	return p.productSkuPoToDo(&productSku), nil
 }
 
 func (p *ProductRepo) FindProductSkusBySkuIdList(ctx context.Context, skuIds []int64) ([]*biz.ProductSku, error) {
-	var productSkus []po.ProductSku
-	if err := p.data.DB.Where("id in ?", skuIds).Find(&productSkus).Error; err != nil {
+	var productSkus []po.PmsProductSku
+	if err := p.data.DB.WithContext(ctx).Where("id in ?", skuIds).Find(&productSkus).Error; err != nil {
 		return nil, api.ErrorDbError("Failed to find product skus %v", skuIds).WithCause(err)
 	}
 	skus := make([]*biz.ProductSku, 0, len(productSkus))
@@ -88,8 +113,8 @@ func (p *ProductRepo) FindProductSkusBySkuIdList(ctx context.Context, skuIds []i
 }
 
 func (p *ProductRepo) FindProductSkusByProductId(ctx context.Context, productId int64) ([]*biz.ProductSku, error) {
-	var productSkus []po.ProductSku
-	if err := p.data.DB.Where("product_id = ?", productId).Find(&productSkus).Error; err != nil {
+	var productSkus []po.PmsProductSku
+	if err := p.data.DB.WithContext(ctx).Where("product_id = ?", productId).Find(&productSkus).Error; err != nil {
 		return nil, api.ErrorDbError("Failed to find product skus %d", productId).WithCause(err)
 	}
 	skus := make([]*biz.ProductSku, 0, len(productSkus))
@@ -121,11 +146,11 @@ func (p *ProductRepo) productDoToPo(param *biz.Product) *po.PmsProduct {
 		TotalStock:                 param.TotalStock,
 		Unit:                       param.Unit,
 		Weight:                     param.Weight,
-		PreviewStatus:              param.PreviewStatus,
-		PublishStatus:              param.PublishStatus,
-		NewStatus:                  param.NewStatus,
-		RecommendStatus:            param.RecommendStatus,
-		VerifyStatus:               param.VerifyStatus,
+		PreviewStatus:              int8(param.PreviewStatus),
+		ListingStatus:              int8(param.ListingStatus),
+		NewStatus:                  int8(param.NewStatus),
+		RecommendStatus:            int8(param.RecommendStatus),
+		VerifyStatus:               int8(param.VerifyStatus),
 		ServiceIds:                 param.ServiceIds,
 		Keywords:                   param.Keywords,
 		Note:                       param.Note,
@@ -137,22 +162,22 @@ func (p *ProductRepo) productDoToPo(param *biz.Product) *po.PmsProduct {
 		PromotionStartTime:         param.PromotionStartTime,
 		PromotionEndTime:           param.PromotionEndTime,
 		PromotionPerLimit:          param.PromotionPerLimit,
-		PromotionType:              param.PromotionType,
+		PromotionType:              int8(param.PromotionType),
 		BrandName:                  param.BrandName,
 		ProductCategoryName:        param.ProductCategoryName,
 	}
-	product.Skus = make([]*po.ProductSku, 0, len(param.SkuList))
+	product.Skus = make([]*po.PmsProductSku, 0, len(param.SkuList))
 	for _, sku := range param.SkuList {
 		attributes := make([]po.Attribute, 0, len(sku.Attributes))
 		for _, attr := range sku.Attributes {
 			attributes = append(attributes, po.Attribute{
-				AttributeId:        attr.AttributeId,
-				AttributeName:      attr.AttributeName,
-				AttributeValueId:   attr.AttributeValueId,
-				AttributeValueName: attr.AttributeValueName,
+				AttributeId:      attr.AttributeId,
+				AttributeName:    attr.AttributeName,
+				AttributeValueId: attr.AttributeValueId,
+				AttributeValue:   attr.AttributeValue,
 			})
 		}
-		product.Skus = append(product.Skus, &po.ProductSku{
+		product.Skus = append(product.Skus, &po.PmsProductSku{
 			ProductId:      sku.ProductId,
 			SkuCode:        sku.SkuCode,
 			Name:           sku.Name,
@@ -163,14 +188,13 @@ func (p *ProductRepo) productDoToPo(param *biz.Product) *po.PmsProduct {
 			Stock:          sku.Stock,
 			StockWarn:      sku.StockWarn,
 			Sales:          sku.Sales,
-			GiftBlockStock: sku.GiftBlockStock,
 		})
 	}
 	return product
 }
 
-func (p *ProductRepo) productSkuDoToPo(sku *biz.ProductSku) *po.ProductSku {
-	return &po.ProductSku{
+func (p *ProductRepo) productSkuDoToPo(sku *biz.ProductSku) *po.PmsProductSku {
+	return &po.PmsProductSku{
 		Id:             sku.Id,
 		ProductId:      sku.ProductId,
 		SkuCode:        sku.SkuCode,
@@ -181,7 +205,6 @@ func (p *ProductRepo) productSkuDoToPo(sku *biz.ProductSku) *po.ProductSku {
 		Stock:          sku.Stock,
 		StockWarn:      sku.StockWarn,
 		Sales:          sku.Sales,
-		GiftBlockStock: sku.GiftBlockStock,
 	}
 }
 
@@ -195,7 +218,7 @@ func (p *ProductRepo) UpdateProduct(ctx context.Context, param *biz.UpdateProduc
 
 func (p *ProductRepo) UpdateProductSku(ctx context.Context, param *biz.UpdateProductSkuDo) error {
 	productSku := p.productSkuDoToPo(param.ProductSku)
-	if err := p.data.DB.WithContext(ctx).Model(&po.ProductSku{}).Where("id = ?", param.Id).Updates(&productSku).Error; err != nil {
+	if err := p.data.DB.WithContext(ctx).Model(&po.PmsProductSku{}).Where("id = ?", param.Id).Updates(&productSku).Error; err != nil {
 		return api.ErrorDbError("Failed to update product sku %d", param.Id).WithCause(err)
 	}
 	return nil
@@ -211,7 +234,7 @@ func (p *ProductRepo) CreateProduct(ctx context.Context, param *biz.CreateProduc
 
 func (p *ProductRepo) DeleteProduct(ctx context.Context, productId int64) error {
 	err := p.data.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		if err := tx.Where("product_id = ?", productId).Delete(&po.ProductSku{}).Error; err != nil {
+		if err := tx.Where("product_id = ?", productId).Delete(&po.PmsProductSku{}).Error; err != nil {
 			return api.ErrorDbError("Failed to delete product skus %d", productId).WithCause(err)
 		}
 		if err := tx.Delete(&po.PmsProduct{}, productId).Error; err != nil {
@@ -226,19 +249,19 @@ func (p *ProductRepo) DeleteProduct(ctx context.Context, productId int64) error 
 }
 
 func (p *ProductRepo) DeleteProductSku(ctx context.Context, skuId int64) error {
-	if err := p.data.DB.WithContext(ctx).Delete(&po.ProductSku{}, skuId).Error; err != nil {
+	if err := p.data.DB.WithContext(ctx).Delete(&po.PmsProductSku{}, skuId).Error; err != nil {
 		return api.ErrorDbError("Failed to delete product sku %d", skuId).WithCause(err)
 	}
 	return nil
 }
 
-func (p *ProductRepo) FindProductList(ctx context.Context, req *biz.ListProductParam) (total int64, list []*biz.Product, err error) {
+func (p *ProductRepo) FindProductList(ctx context.Context, req *v1.ListProductRequest) (total int64, list []*biz.Product, err error) {
 	if err = p.data.DB.WithContext(ctx).Model(&po.PmsProduct{}).Where("").Count(&total).Error; err != nil {
 		return 0, nil, api.ErrorDbError("Failed to find product list").WithCause(err)
 	}
 	if err = p.data.DB.WithContext(ctx).Model(&po.PmsProduct{}).Scopes(
 		func(db *gorm.DB) *gorm.DB {
-			db = db.Offset((req.Number - 1) * req.Size)
+			db = db.Offset(int((req.Pagination.PageNumber - 1) * req.Pagination.PageSize))
 			return db
 		},
 	).Scan(&list).Error; err != nil {

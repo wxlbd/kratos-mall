@@ -40,4 +40,9 @@ message Data {
   }
   Database database = 1;
   Redis redis = 2;
+
+  message Jwt {
+    string secret = 1;
+  }
+  Jwt jwt = 3;
 }

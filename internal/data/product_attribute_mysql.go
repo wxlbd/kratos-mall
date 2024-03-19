@@ -2,12 +2,13 @@ package data
 
 import (
 	"context"
+	"strconv"
+
 	"gorm.io/gorm"
 	"kratos-admin/api"
 	v1 "kratos-admin/api/product/v1"
 	"kratos-admin/internal/biz"
 	"kratos-admin/internal/data/po"
-	"strconv"
 )
 
 type ProductAttributeRepo struct {
@@ -17,7 +18,7 @@ type ProductAttributeRepo struct {
 func (p *ProductAttributeRepo) FindProductAttributeById(ctx context.Context, id int64) (*v1.ProductAttribute, error) {
 	var productAttribute *po.PmsProductAttribute
 	if err := p.data.DB.WithContext(ctx).First(&productAttribute, id).Error; err != nil {
-		return nil, api.ErrorDbError("Failed to find product attribute").WithCause(err)
+		return nil, api.ErrorDbError("Failed to find product Attribute").WithCause(err)
 	}
 
 	return p.productAttributePoToDto(productAttribute), nil
@@ -36,18 +37,18 @@ func (p *ProductAttributeRepo) FindProductAttributeList(ctx context.Context, par
 			if param.Name != "" {
 				db = db.Where("name like ?", "%"+param.Name+"%")
 			}
-			if param.Type != v1.ProductAttributeType_ProductAttributeTypeUnknown {
+			if param.Type != v1.ProductAttributeType_PRODUCT_ATTRIBUTE_TYPE_UNKNOWN {
 				db = db.Where("select_type = ?", param.Type)
 			}
 			return db
 		})
 	err = tx.Count(&count).Error
 	if err != nil {
-		return nil, api.ErrorDbError("Failed to find product attribute list").WithCause(err)
+		return nil, api.ErrorDbError("Failed to find product Attribute list").WithCause(err)
 	}
 	err = tx.Offset(int((param.GetPageNumber() - 1) * param.PageSize)).Limit(int(param.PageSize)).Find(&list).Error
 	if err != nil {
-		return nil, api.ErrorDbError("Failed to find product attribute list").WithCause(err)
+		return nil, api.ErrorDbError("Failed to find product Attribute list").WithCause(err)
 	}
 
 	reply.ProductAttributes = make([]*v1.ProductAttribute, 0, len(list))
@@ -76,10 +77,11 @@ func (p *ProductAttributeRepo) productAttributeDtoToPo(attribute *v1.ProductAttr
 		Type:                       int32(attribute.Type),
 	}
 }
+
 func (p *ProductAttributeRepo) CreateProductAttribute(ctx context.Context, param *v1.CreateProductAttributeRequest) (int64, error) {
 	productAttribute := p.productAttributeDtoToPo(param.ProductAttribute)
 	if err := p.data.DB.WithContext(ctx).Create(productAttribute).Error; err != nil {
-		return 0, api.ErrorDbError("Failed to create product attribute").WithCause(err)
+		return 0, api.ErrorDbError("Failed to create product Attribute").WithCause(err)
 	}
 	return productAttribute.Id, nil
 }
@@ -87,17 +89,17 @@ func (p *ProductAttributeRepo) CreateProductAttribute(ctx context.Context, param
 func (p *ProductAttributeRepo) UpdateProductAttribute(ctx context.Context, param *v1.UpdateProductAttributeRequest) error {
 	id, err := strconv.ParseInt(param.ProductAttributeId, 10, 64)
 	if err != nil {
-		return api.ErrorInvalidParam("Invalid product attribute id").WithCause(err)
+		return api.ErrorInvalidParam("Invalid product Attribute id").WithCause(err)
 	}
 	if err := p.data.DB.WithContext(ctx).Model(&po.PmsProductAttribute{}).Where("id = ?", id).Updates(p.productAttributeDtoToPo(param.ProductAttribute)).Error; err != nil {
-		return api.ErrorDbError("Failed to update product attribute").WithCause(err)
+		return api.ErrorDbError("Failed to update product Attribute").WithCause(err)
 	}
 	return nil
 }
 
 func (p *ProductAttributeRepo) DeleteProductAttribute(ctx context.Context, id int64) error {
 	if err := p.data.DB.WithContext(ctx).Delete(&po.PmsProductAttribute{}, id).Error; err != nil {
-		return api.ErrorDbError("Failed to delete product attribute").WithCause(err)
+		return api.ErrorDbError("Failed to delete product Attribute").WithCause(err)
 	}
 	return nil
 }
