@@ -2,78 +2,88 @@ syntax = "proto3";
 
 package api.product.v1;
 
-import "validate/validate.proto";
 import "google/api/annotations.proto";
+import "validate/validate.proto";
 
 option go_package = "kratos-admin/api/product/v1;v1";
 option java_multiple_files = true;
 option java_package = "api.product.v1";
 
 enum DisplayStatus {
-	UNKNOWN = 0;
-	SHOW = 1;
-	HIDE = 2;
+    DISPLAY_STATUS_UNKNOWN = 0;
+    DISPLAY_STATUS_SHOW = 1;
+    DISPLAY_STATUS_HIDE = 2;
 }
 
+
+message ProductOrigin {
+    string id = 1;
+    string code = 2;
+    string name = 3;
+    string flag_icon = 4;
+}
+
+
+
 message ProductCategory {
-	string id = 1;
-	string name = 2;
-	int32 level = 3;
-	string parent_id = 4;
-	int32 sort = 5;
-	string icon = 6;
-	string description = 7;
-	repeated string keywords = 8;
-	int32 product_count = 9;
-	string product_unit = 10;
-	DisplayStatus nav_status = 11;
-	DisplayStatus show_status = 12;
+    string id = 1;
+    string name = 2;
+    int32 level = 3;
+    string parent_id = 4;
+    int32 sort = 5;
+    string icon = 6;
+    string description = 7;
+    repeated string keywords = 8;
+    int32 product_count = 9;
+    string product_unit = 10;
+    DisplayStatus nav_status = 11;
+    DisplayStatus show_status = 12;
 }
 
 message CreateProductCategoryRequest {
-	ProductCategory product_category = 1;
+    ProductCategory product_category = 1;
 }
 
 message CreateProductCategoryReply {
-	string id = 1;
+    string id = 1;
 }
 
 message UpdateProductCategoryRequest {
-	ProductCategory product_category = 1;
-	string product_category_id = 2;
+    ProductCategory product_category = 1;
+    string product_category_id = 2;
 }
 
 message UpdateProductCategoryReply {
 }
 
 message DeleteProductCategoryRequest {
-	string product_category_id = 1;
+    string product_category_id = 1;
 }
 
 message DeleteProductCategoryReply {
 }
 
 message FindProductCategoryRequest {
-	string product_category_id = 1;
+    string product_category_id = 1;
 }
 
 message FindProductCategoryReply {
-	ProductCategory product_category_id = 1;
+    ProductCategory product_category = 1;
 }
 
 message FindProductCategoryListRequest {
-	int32 page_number = 1;
-	int32 page_size = 2;
-	string name = 3;
-	int32 level = 4;
-	int64 parent_id = 5;
-	DisplayStatus nav_status = 6;
-	DisplayStatus show_status = 7;
+    int32 page_number = 1;
+    int32 page_size = 2;
+    string name = 3;
+    int32 level = 4;
+    int64 parent_id = 5;
+    DisplayStatus nav_status = 6;
+    DisplayStatus show_status = 7;
 }
 
 message FindProductCategoryListReply {
-	repeated ProductCategory product_categories = 1;
-	int32 total = 2;
+    repeated ProductCategory product_categories = 1;
+    int32 total = 2;
 }
 
 
@@ -82,136 +92,136 @@ message FindProductCategoryTreeRequest {
 }
 
 message ProductCategoryTreeNode {
-	ProductCategory product_category = 1;
-	repeated ProductCategoryTreeNode children = 2;
+    ProductCategory product_category = 1;
+    repeated ProductCategoryTreeNode children = 2;
 }
 
 message FindProductCategoryTreeReply {
-	repeated ProductCategoryTreeNode tree = 1;
+    repeated ProductCategoryTreeNode tree = 1;
 }
 // 商品属性类型
 enum ProductAttributeType {
-	ProductAttributeTypeUnknown = 0;
-	ProductAttributeTypeSpecification = 1; // 规格
-	ProductAttributeTypeParam = 2;// 参数
+    PRODUCT_ATTRIBUTE_TYPE_UNKNOWN = 0;
+    PRODUCT_ATTRIBUTE_TYPE_SPECIFICATION = 1; // 规格
+    PRODUCT_ATTRIBUTE_TYPE_PARAM = 2;// 参数
 }
 // 商品属性筛选类型
 enum ProductAttributeFilterType {
-	ProductAttributeFilterTypeUnknown = 0;
-	ProductAttributeFilterTypeNormal = 1;// 普通
-	ProductAttributeFilterTypeColor = 2;// 颜色
+    PRODUCT_ATTRIBUTE_FILTER_TYPE_UNKNOWN = 0;
+    PRODUCT_ATTRIBUTE_FILTER_TYPE_NORMAL = 1;// 普通
+    PRODUCT_ATTRIBUTE_FILTER_TYPE_COLOR = 2;// 颜色
 }
 // 商品属性检索类型
 enum ProductAttributeSearchType {
-	ProductAttributeSearchTypeUnknown = 0;
-	ProductAttributeSearchTypeNone = 1;// 不需要检索
-	ProductAttributeSearchTypeKeyword = 2;// 关键字检索
-	ProductAttributeSearchTypeRange = 3;// 范围检索
+    PRODUCT_ATTRIBUTE_SEARCH_TYPE_UNKNOWN = 0;
+    PRODUCT_ATTRIBUTE_SEARCH_TYPE_NONE = 1;// 不需要检索
+    PRODUCT_ATTRIBUTE_SEARCH_TYPE_KEYWORD = 2;// 关键字检索
+    PRODUCT_ATTRIBUTE_SEARCH_TYPE_RANGE = 3;// 范围检索
 }
 // 属性可选类型
 enum ProductAttributeSelectType {
-	ProductAttributeSelectTypeUnknown = 0;
-	ProductAttributeSelectTypeUnique = 1;// 唯一
-	ProductAttributeSelectTypeSingle = 2;// 单选
-	ProductAttributeSelectTypeMultiple = 3;// 多选
+    PRODUCT_ATTRIBUTE_SELECT_TYPE_UNKNOWN = 0;
+    PRODUCT_ATTRIBUTE_SELECT_TYPE_UNIQUE = 1;// 唯一
+    PRODUCT_ATTRIBUTE_SELECT_TYPE_SINGLE = 2;// 单选
+    PRODUCT_ATTRIBUTE_SELECT_TYPE_MULTIPLE = 3;// 多选
 }
 // 属性录入方式
 enum ProductAttributeInputType {
-	ProductAttributeInputTypeUnknown = 0;
-	ProductAttributeInputTypeHand = 1;// 手动录入
-	ProductAttributeInputTypeListSelect = 2;// 列表选取
+    PRODUCT_ATTRIBUTE_INPUT_TYPE_UNKNOWN = 0;
+    PRODUCT_ATTRIBUTE_INPUT_TYPE_HAND = 1;// 手动录入
+    PRODUCT_ATTRIBUTE_INPUT_TYPE_LIST_SELECT = 2;// 列表选取
 }
 // 相同属性产品是否关联
 enum ProductAttributeRelatedType {
-	ProductAttributeRelatedTypeUnknown = 0;
-	ProductAttributeRelatedTypeNo = 1;// 不关联
-	ProductAttributeRelatedTypeYes = 2;// 关联
+    PRODUCT_ATTRIBUTE_RELATED_TYPE_UNKNOWN = 0;
+    PRODUCT_ATTRIBUTE_RELATED_TYPE_NO = 1;// 不关联
+    PRODUCT_ATTRIBUTE_RELATED_TYPE_YES = 2;// 关联
 }
 
 // 是否支持手动新增
 enum ProductAttributeHandAddStatus {
-	ProductAttributeHandAddStatusUnknown = 0;
-	ProductAttributeHandAddStatusNo = 1;// 不支持
-	ProductAttributeHandAddStatusYes = 2;// 支持
+    PRODUCT_ATTRIBUTE_HAND_ADD_STATUS_UNKNOWN = 0;
+    PRODUCT_ATTRIBUTE_HAND_ADD_STATUS_NO = 1;// 不支持
+    PRODUCT_ATTRIBUTE_HAND_ADD_STATUS_YES = 2;// 支持
 }
 
 
 message ProductAttribute {
-	string id = 1;
-	string product_attribute_category_id = 2;
-	string name = 3;
-	ProductAttributeInputType input_type = 4;
-	repeated string input_list = 5;// 可选值
-	int32 sort = 6;
-	ProductAttributeSelectType select_type = 7;
-	ProductAttributeFilterType filter_type = 8;
-	ProductAttributeSearchType search_type = 9;
-	ProductAttributeType type = 10;
-	ProductAttributeHandAddStatus hand_add_status=11;
-	ProductAttributeRelatedType related_status = 12;
+    string id = 1;
+    string product_attribute_category_id = 2;
+    string name = 3;
+    ProductAttributeInputType input_type = 4;
+    repeated string input_list = 5;// 可选值
+    int32 sort = 6;
+    ProductAttributeSelectType select_type = 7;
+    ProductAttributeFilterType filter_type = 8;
+    ProductAttributeSearchType search_type = 9;
+    ProductAttributeType type = 10;
+    ProductAttributeHandAddStatus hand_add_status = 11;
+    ProductAttributeRelatedType related_status = 12;
 }
 
 message CreateProductAttributeRequest {
-	ProductAttribute product_attribute = 1;
+    ProductAttribute product_attribute = 1;
 }
 
 message CreateProductAttributeReply {
-	string id = 1;
+    string id = 1;
 }
 
 message UpdateProductAttributeRequest {
-	ProductAttribute product_attribute = 1;
-	string product_attribute_id = 2;
+    ProductAttribute product_attribute = 1;
+    string product_attribute_id = 2;
 }
 
 message UpdateProductAttributeReply {
 }
 
 message DeleteProductAttributeRequest {
-	string product_attribute_id = 1;
+    string product_attribute_id = 1;
 }
 
 message DeleteProductAttributeReply {
 }
 
 message FindProductAttributeRequest {
-	string product_attribute_id = 1;
+    string product_attribute_id = 1;
 }
 
 message FindProductAttributeReply {
-	ProductAttribute product_attribute_id = 1;
+    ProductAttribute product_attribute = 1;
 }
 
 message FindProductAttributeListRequest {
-	int32 page_number = 1;
-	int32 page_size = 2;
-	string name = 3;
-	ProductAttributeType type = 4;
+    int32 page_number = 1;
+    int32 page_size = 2;
+    string name = 3;
+    ProductAttributeType type = 4;
 }
 
 message FindProductAttributeListReply {
-	repeated ProductAttribute product_attributes = 1;
-	int32 total = 2;
+    repeated ProductAttribute product_attributes = 1;
+    int32 total = 2;
 }
 
 message ProductAttributeValue {
-	string id = 1;
-	string product_attribute_id = 2;
-	repeated string value = 3;
-	int32 sort = 4;
+    string id = 1;
+    string product_attribute_id = 2;
+    repeated string value = 3;
+    int32 sort = 4;
 }
 
 message CreateOrUpdateProductAttributeValueRequest {
-	ProductAttributeValue product_attribute_value = 1;
+    ProductAttributeValue product_attribute_value = 1;
 }
 
 message CreateOrUpdateProductAttributeValueReply {
-	string product_attribute_value_id = 1;
+    string product_attribute_value_id = 1;
 }
 
 message UpdateProductAttributeValueRequest {
-	ProductAttributeValue product_attribute_value = 1;
-	string product_attribute_value_id = 2;
+    ProductAttributeValue product_attribute_value = 1;
+    string product_attribute_value_id = 2;
 }
 
 message UpdateProductAttributeValueReply {
@@ -219,7 +229,7 @@ message UpdateProductAttributeValueReply {
 }
 
 message DeleteProductAttributeValueRequest {
-	string product_attribute_value_id = 1;
+    string product_attribute_value_id = 1;
 }
 
 message DeleteProductAttributeValueReply {
@@ -228,149 +238,178 @@ message DeleteProductAttributeValueReply {
 
 
 message FindProductAttributeValueByAttributeIdRequest {
-	string product_attribute_id = 1;
+    string product_attribute_id = 1;
 }
 
 message FindProductAttributeValueByAttributeIdReply {
-	repeated ProductAttributeValue product_attribute_values = 1;
+    repeated ProductAttributeValue product_attribute_values = 1;
 }
-service Product {
-	// 创建或更新商品属性值
-	rpc CreateOrUpdateProductAttributeValue (CreateOrUpdateProductAttributeValueRequest) returns (CreateOrUpdateProductAttributeValueReply){
-		option (google.api.http) = {
-			post: "/v1/product/attribute/value"
-			body: "*"
-		};
-	}
-	// 删除商品属性值
-	rpc DeleteProductAttributeValue (DeleteProductAttributeValueRequest) returns (DeleteProductAttributeValueReply){
-		option (google.api.http) = {
-			delete: "/v1/product/attribute/value/{product_attribute_value_id}"
-		};
-	}
-	// 根据属性id获取属性值
-	rpc FindProductAttributeValueByAttributeId (FindProductAttributeValueByAttributeIdRequest) returns (FindProductAttributeValueByAttributeIdReply){
-		option (google.api.http) = {
-			get: "/v1/product/attribute/value/{product_attribute_id}"
-		};
-	}
-	// 创建商品属性
-	rpc CreateProductAttribute (CreateProductAttributeRequest) returns (CreateProductAttributeReply){
-		option (google.api.http) = {
-			post: "/v1/product/attribute"
-			body: "*"
-		};
-	}
+service ProductService {
+    // 创建或更新商品属性值
+    rpc CreateOrUpdateProductAttributeValue (CreateOrUpdateProductAttributeValueRequest) returns (CreateOrUpdateProductAttributeValueReply) {
+        option (google.api.http) = {
+            post: "/v1/product/Attribute/value"
+            body: "*"
+        };
+    }
+    // 删除商品属性值
+    rpc DeleteProductAttributeValue (DeleteProductAttributeValueRequest) returns (DeleteProductAttributeValueReply) {
+        option (google.api.http) = {
+            delete: "/v1/product/Attribute/value/{product_attribute_value_id}"
+        };
+    }
+    // 根据属性id获取属性值
+    rpc FindProductAttributeValueByAttributeId (FindProductAttributeValueByAttributeIdRequest) returns (FindProductAttributeValueByAttributeIdReply) {
+        option (google.api.http) = {
+            get: "/v1/product/Attribute/value/{product_attribute_id}"
+        };
+    }
+    // 创建商品属性
+    rpc CreateProductAttribute (CreateProductAttributeRequest) returns (CreateProductAttributeReply) {
+        option (google.api.http) = {
+            post: "/v1/product/Attribute"
+            body: "*"
+        };
+    }
 
-	rpc UpdateProductAttribute (UpdateProductAttributeRequest) returns (UpdateProductAttributeReply){
-		option (google.api.http) = {
-			put: "/v1/product/attribute/{product_attribute_id}"
-			body: "*"
-		};
-	}
+    rpc UpdateProductAttribute (UpdateProductAttributeRequest) returns (UpdateProductAttributeReply) {
+        option (google.api.http) = {
+            put: "/v1/product/Attribute/{product_attribute_id}"
+            body: "*"
+        };
+    }
 
-	rpc DeleteProductAttribute (DeleteProductAttributeRequest) returns (DeleteProductAttributeReply){
-		option (google.api.http) = {
-			delete: "/v1/product/attribute/{product_attribute_id}"
-		};
-	}
+    rpc DeleteProductAttribute (DeleteProductAttributeRequest) returns (DeleteProductAttributeReply) {
+        option (google.api.http) = {
+            delete: "/v1/product/Attribute/{product_attribute_id}"
+        };
+    }
 
-	rpc FindProductAttribute (FindProductAttributeRequest) returns (FindProductAttributeReply){
-		option (google.api.http) = {
-			get: "/v1/product/attribute/{product_attribute_id}"
-		};
-	}
+    rpc FindProductAttribute (FindProductAttributeRequest) returns (FindProductAttributeReply) {
+        option (google.api.http) = {
+            get: "/v1/product/Attribute/{product_attribute_id}"
+        };
+    }
 
-	rpc FindProductAttributeList (FindProductAttributeListRequest) returns (FindProductAttributeListReply){
-		option (google.api.http) = {
-			get: "/v1/product/attribute"
-		};
-	}
-	rpc CreateProductCategory (CreateProductCategoryRequest) returns (CreateProductCategoryReply){
-		option (google.api.http) = {
-			post: "/v1/product/category"
-			body: "*"
-		};
-	}
-	rpc UpdateProductCategory (UpdateProductCategoryRequest) returns (UpdateProductCategoryReply){
-		option (google.api.http) = {
-			put: "/v1/product/category/{product_category_id}"
-			body: "*"
-		};
-	}
+    rpc FindProductAttributeList (FindProductAttributeListRequest) returns (FindProductAttributeListReply) {
+        option (google.api.http) = {
+            get: "/v1/product/Attribute"
+        };
+    }
+    rpc CreateProductCategory (CreateProductCategoryRequest) returns (CreateProductCategoryReply) {
+        option (google.api.http) = {
+            post: "/v1/product/category"
+            body: "*"
+        };
+    }
+    rpc UpdateProductCategory (UpdateProductCategoryRequest) returns (UpdateProductCategoryReply) {
+        option (google.api.http) = {
+            put: "/v1/product/category/{product_category_id}"
+            body: "*"
+        };
+    }
 
-	rpc DeleteProductCategory (DeleteProductCategoryRequest) returns (DeleteProductCategoryReply){
-		option (google.api.http) = {
-			delete: "/v1/product/category/{product_category_id}"
-		};
-	}
+    rpc DeleteProductCategory (DeleteProductCategoryRequest) returns (DeleteProductCategoryReply) {
+        option (google.api.http) = {
+            delete: "/v1/product/category/{product_category_id}"
+        };
+    }
 
-	rpc FindProductCategory (FindProductCategoryRequest) returns (FindProductCategoryReply){
-		option (google.api.http) = {
-			get: "/v1/product/category/{product_category_id}"
-		};
-	}
+    rpc FindProductCategory (FindProductCategoryRequest) returns (FindProductCategoryReply) {
+        option (google.api.http) = {
+            get: "/v1/product/category/{product_category_id}"
+        };
+    }
 
-	rpc FindProductCategoryList (FindProductCategoryListRequest) returns (FindProductCategoryListReply){
-		option (google.api.http) = {
-			get: "/v1/product/category"
-		};
-	}
+    rpc FindProductCategoryList (FindProductCategoryListRequest) returns (FindProductCategoryListReply) {
+        option (google.api.http) = {
+            get: "/v1/product/category"
+        };
+    }
 
-	rpc FindProductCategoryTree (FindProductCategoryTreeRequest) returns (FindProductCategoryTreeReply){
-		option (google.api.http) = {
-			get: "/v1/product/category/tree"
-		};
-	}
+    rpc FindProductCategoryTree (FindProductCategoryTreeRequest) returns (FindProductCategoryTreeReply) {
+        option (google.api.http) = {
+            get: "/v1/product/category/tree"
+        };
+    }
 
-	// 创建商品
-	rpc CreateProduct (CreateProductRequest) returns (CreateProductReply){
-		option (google.api.http) = {
-			post: "/v1/product"
-			body: "*"
-		};
-	};
-	// 更新商品
-	rpc UpdateProduct (UpdateProductRequest) returns (UpdateProductReply){
-		option (google.api.http) = {
-			put: "/v1/product/{product_id}"
-			body: "*"
-		};
-	};
-	// 删除商品
-	rpc DeleteProduct (DeleteProductRequest) returns (DeleteProductReply){
-		option (google.api.http) = {
-			delete: "/v1/product/{product_id}"
-		};
-	};
-	// 获取商品详情
-	rpc GetProduct (GetProductRequest) returns (GetProductReply){
-		option (google.api.http) = {
-			get: "/v1/product/{product_id}"
-		};
-	};
-	// 获取商品列表
-	rpc ListProduct (ListProductRequest) returns (ListProductReply){
-		option (google.api.http) = {
-			get: "/v1/product"
-		};
-	};
-	// 获取商品sku列表
-	rpc ListProductSku (ListProductSkuRequest) returns (ListProductSkuReply){
-		option (google.api.http) = {
-			get: "/v1/product/{product_id}/sku"
-		};
-	}
-	// 删除商品sku
-	rpc DeleteProductSku (DeleteProductSkuRequest) returns (DeleteProductSkuReply){
-		option (google.api.http) = {
-			delete: "/v1/product/{product_id}/sku/{product_sku_id}"
-		};
-	}
+    // 创建商品
+    rpc CreateProduct (CreateProductRequest) returns (CreateProductReply) {
+        option (google.api.http) = {
+            post: "/v1/product"
+            body: "*"
+        };
+    };
+    // 更新商品
+    rpc UpdateProduct (UpdateProductRequest) returns (UpdateProductReply) {
+        option (google.api.http) = {
+            put: "/v1/product/{product_id}"
+            body: "*"
+        };
+    };
+    // 删除商品
+    rpc DeleteProduct (DeleteProductRequest) returns (DeleteProductReply) {
+        option (google.api.http) = {
+            delete: "/v1/product/{product_id}"
+        };
+    };
+    // 获取商品详情
+    rpc GetProduct (GetProductRequest) returns (GetProductReply) {
+        option (google.api.http) = {
+            get: "/v1/product/{product_id}"
+        };
+    };
+    // 获取商品列表
+    rpc ListProduct (ListProductRequest) returns (ListProductReply) {
+        option (google.api.http) = {
+            get: "/v1/product"
+        };
+    };
+    // 获取商品sku列表
+    rpc ListProductSku (ListProductSkuRequest) returns (ListProductSkuReply) {
+        option (google.api.http) = {
+            get: "/v1/product/{product_id}/sku"
+        };
+    }
+    // 删除商品sku
+    rpc DeleteProductSku (DeleteProductSkuRequest) returns (DeleteProductSkuReply) {
+        option (google.api.http) = {
+            delete: "/v1/product/sku/{product_sku_id}"
+        };
+    }
+
+    // 创建商品sku
+    rpc CreateProductSku (CreateProductSkuRequest) returns (CreateProductSkuReply) {
+        option (google.api.http) = {
+            post: "/v1/product/sku"
+            body: "*"
+        };
+    }
+    rpc UpdateProductSku (UpdateProductSkuRequest) returns (UpdateProductSkuReply) {
+        option (google.api.http) = {
+            put: "/v1/product/sku/{product_sku_id}"
+            body: "*"
+        };
+    }
 }
+
+message CreateProductSkuRequest {
+    ProductSku product_sku = 1;
+}
+
+message CreateProductSkuReply {
+
+}
+
+message UpdateProductSkuRequest {
+    string product_sku_id = 1;
+    ProductSku product_sku = 2;
+}
+
+message UpdateProductSkuReply {}
+
 message DeleteProductSkuRequest {
-	int64 product_id = 1;
-	int64 product_sku_id = 2;
+    string product_sku_id = 1;
 }
 
 message DeleteProductSkuReply {
@@ -378,132 +417,170 @@ message DeleteProductSkuReply {
 
 
 message ListProductSkuRequest {
-	int64       product_id = 1;
+    int64 product_id = 1;
 }
 message ListProductSkuReply {
-	repeated Sku sku = 1;
+    repeated ProductSku product_skus = 1;
 }
 
-message Sku {
-	string    sku_code = 1;
-	float      price = 2;
-	int64      stock = 3;
-	int64      stock_warn = 4;
-	string    pic = 5;
-	int64      sales = 6;
-	float     promotion_price = 7;
-	int64     gift_block_stock = 8;
-	string    sku_name = 9;
-	string    attribute_data = 10;//属性数据json
+message ProductSku {
+    string id = 1;
+    string code = 2;// 商品编码
+    double price = 3;// 价格
+    uint32 stock = 4;
+    uint32  stock_warn = 5;
+    string pic = 6;
+    uint32 sales = 7;
+    double promotion_price = 8;// 促销价格
+    int64 gift_block_stock = 9;
+    string name = 10;
+    repeated Attribute attributes = 11;//属性数据json
+    string product_id = 12;
+}
+
+message Attribute {
+    string attribute_id = 1;
+    string attribute_name = 2;
+    string attribute_value = 3;
+    string attribute_value_id = 4;
 }
 
 message CreateProductRequest {
-	repeated string       product_category_id = 1;// 产品分类列表
-	string       brand_id = 2;// 品牌id
-	string       flash_promotion_id = 3;// 闪购活动
-	string       product_attribute_category_id = 4;// 属性分类
-	string      name = 5;// 商品名称
-	string      pic = 6;// 主图
-	string      product_sn = 7;// 商品编码
-	int64       publish_status = 8;// 上下架状态
-	int64       new_status = 9;// 是否新品
-	int64       recommend_status = 10;// 是否推荐
-	int64       verify_status = 11;// 审核状态
-	int64       sort = 12;// 排序
-	int64       total_sales = 13;// 销量
-	double        price = 14;// 售卖价(sku里的最低价格)
-	double        promotion_price = 15;// 促销价
-	int64       gift_growth = 16;
-	int64       gift_point = 17;// 赠送的积分
-	int64       use_point_limit = 18;// 限制使用的积分
-	string      sub_title = 19;// 副标题
-	string      description = 20;// 描述
-	double        original_price = 21;// 原价
-	int64       stock = 22;// 库存
-	int64       stock_warn = 23;// 库存预警值
-	string      unit = 24;// 单位
-	double        weight = 25;// 重量
-	int64       preview_status = 26;// 是否为预览商品
-	repeated int64       service_ids = 27;// 产品服务id数组
-	repeated string      keywords = 28; // 关键字
-	string      note = 29;// 商品备注
-	repeated string      album_pics = 30[(validate.rules).repeated = {max_items: 5}];// 画册图片,连产品图片限制为5张
-	string      detail_title = 31;// 产品详述标题
-	string      detail_desc = 32;// 产品详述描述
-	string      detail_html = 33;// 产品详述
-	string      detail_mobile_html = 34;// 产品详述移动端
-	string   promotion_start_time = 35;// 促销开始时间
-	string   promotion_end_time = 36;// 促销结束时间
-	int64       promotion_per_limit = 37;// 活动限购数量
-	int64       promotion_type = 38;// 促销类型
-	string      brand_name = 39;// 品牌名称
-	string      product_category_name = 40;// 产品分类名称
-	repeated Sku      sku_list = 41[(validate.rules).repeated = {min_items: 1}];// sku列表
+    Product product = 1;
 }
+// 商品上下架状态
+enum ProductListingStatus {
+    PRODUCT_LISTING_STATUS_ALL = 0;
+    PRODUCT_LISTING_STATUS_UNLISTED = 1;
+    PRODUCT_LISTING_STATUS_LISTED = 2;
+}
+// 商品审核状态
+enum ProductVerifyStatus {
+    PRODUCT_VERIFY_STATUS_ALL = 0;
+    PRODUCT_VERIFY_STATUS_UNVERIFIED = 1;
+    PRODUCT_VERIFY_STATUS_VERIFIED = 2;
+}
+// 商品新品状态
+enum ProductNewStatus {
+    PRODUCT_NEW_STATUS_ALL = 0;
+    PRODUCT_NEW_STATUS_OLD = 1;
+    PRODUCT_NEW_STATUS_NEW = 2;
+}
+
+// 商品推荐状态
+enum ProductRecommendStatus {
+    PRODUCT_RECOMMEND_STATUS_ALL = 0;
+    PRODUCT_RECOMMEND_STATUS_NOT_RECOMMEND = 1;
+    PRODUCT_RECOMMEND_STATUS_RECOMMEND = 2;
+}
+
+// 商品预览状态
+enum ProductPreviewStatus {
+    PRODUCT_PREVIEW_STATUS_ALL = 0;
+    PRODUCT_PREVIEW_STATUS_NOT_PREVIEW = 1;
+    PRODUCT_PREVIEW_STATUS_PREVIEW = 2;
+}
+
+// 商品贸易类型
+enum ProductTradeType {
+    PRODUCT_TRADE_TYPE_ALL = 0;
+    // 一般贸易
+    PRODUCT_TRADE_TYPE_NORMAL = 1;
+    // 保税仓
+    PRODUCT_TRADE_TYPE_BONDED = 2;
+    // 海外直邮
+    PRODUCT_TRADE_TYPE_OVERSEAS = 3;
+    // 香港直邮
+    PRODUCT_TRADE_TYPE_HONGKONG = 4;
+}
+// 促销类型：1: 没有促销使用原价;2: 使用促销价；3: 使用会员价；4: 使用阶梯价格；5: 使用满减价格；6: 限时购
+enum ProductPromotionType {
+    PRODUCT_PROMOTION_TYPE_ALL = 0;
+    PRODUCT_PROMOTION_TYPE_NOT_PROMOTION = 1;
+    PRODUCT_PROMOTION_TYPE_PROMOTIONAL_PRICE = 2;
+    PRODUCT_PROMOTION_TYPE_MEMBER_PRICE = 3;
+    PRODUCT_PROMOTION_TYPE_STEP_PRICE = 4;
+    PRODUCT_PROMOTION_TYPE_FULL_MINUS = 5;
+    PRODUCT_PROMOTION_TYPE_LIMIT_TIME_BUY = 6;
+}
+
+message Product {
+    string product_id = 1; // 商品id（使用字符串防止在js中精度丢失）
+    repeated string product_category_ids = 2;// 产品分类列表
+    string brand_id = 3;// 品牌id
+    string flash_promotion_id = 4;// 闪购活动
+    string product_attribute_category_id = 5;// 属性分类
+    string name = 6;// 商品名称
+    string pic = 7;// 主图
+    string product_sn = 8;// 商品编码
+    ProductListingStatus listing_status = 9;// 上下架状态
+    ProductNewStatus new_status = 10;// 是否新品
+    ProductRecommendStatus recommend_status = 11;// 是否推荐
+    ProductVerifyStatus verify_status = 12;// 审核状态
+    uint32 sort = 13;// 排序
+    uint32 total_sales = 14;// 销量
+    double price = 15;// 售卖价(sku里的最低价格)
+    double promotion_price = 16;// 促销价
+    uint32 gift_growth = 17;
+    uint32 gift_point = 18;// 赠送的积分
+    uint32 use_point_limit = 19;// 限制使用的积分
+    string sub_title = 20;// 副标题
+    string description = 21;// 描述
+    double original_price = 22;// 原价
+    uint32 total_stock = 23;// 所有sku的总库存
+    uint32 total_warn_stock = 24;// 总库存预警值
+    string unit = 25;// 单位
+    double weight = 26;// 重量
+    ProductPreviewStatus preview_status = 27;// 是否为预览商品
+    repeated int64 service_ids = 28;// 产品服务id数组
+    repeated string keywords = 29; // 关键字
+    string note = 30;// 商品备注
+    repeated string album_pics = 31 [(validate.rules).repeated = {max_items: 5}];// 画册图片,连产品图片限制为5张
+    string detail_title = 32;// 产品详述标题
+    string detail_desc = 33;// 产品详述描述
+    string detail_html = 34;// 产品详述
+    string detail_mobile_html = 35;// 产品详述移动端
+    string promotion_start_time = 36;// 促销开始时间
+    string promotion_end_time = 37;// 促销结束时间
+    int32 promotion_per_limit = 38;// 活动限购数量
+    ProductPromotionType promotion_type = 39;// 促销类型
+    string brand_name = 40;// 品牌名称
+    string product_category_name = 41;// 产品分类名称
+    repeated ProductSku sku_list = 42 [(validate.rules).repeated = {min_items: 1}];// sku列表
+    string freight_template_id = 43;
+    ProductTradeType trade_type = 45;
+}
+
 message CreateProductReply {
-	string       ProductId = 1;
+    string product_id = 1;
 }
 message UpdateProductRequest {
-	string       product_id = 1; // 商品id（使用字符串防止在js中精度丢失）
-	repeated string       product_category_id = 2;// 产品分类列表
-	string       brand_id = 3;// 品牌id
-	string       flash_promotion_id = 4;// 闪购活动
-	string       product_attribute_category_id = 5;// 属性分类
-	string      name = 6;// 商品名称
-	string      pic = 7;// 主图
-	string      product_sn = 8;// 商品编码
-	int64       publish_status = 9;// 上下架状态
-	int64       new_status = 10;// 是否新品
-	int64       recommend_status = 11;// 是否推荐
-	int64       verify_status = 12;// 审核状态
-	int64       sort = 13;// 排序
-	int64       total_sales = 14;// 销量
-	double        price = 15;// 售卖价(sku里的最低价格)
-	double        promotion_price = 16;// 促销价
-	int64       gift_growth = 17;
-	int64       gift_point = 18;// 赠送的积分
-	int64       use_point_limit = 19;// 限制使用的积分
-	string      sub_title = 20;// 副标题
-	string      description = 21;// 描述
-	double        original_price = 22;// 原价
-	int64       stock = 23;// 库存
-	int64       stock_warn = 24;// 库存预警值
-	string      unit = 25;// 单位
-	double        weight = 26;// 重量
-	int64       preview_status = 27;// 是否为预览商品
-	repeated int64       service_ids = 28;// 产品服务id数组
-	repeated string      keywords = 29; // 关键字
-	string      note = 30;// 商品备注
-	repeated string      album_pics = 31[(validate.rules).repeated = {max_items: 5}];// 画册图片,连产品图片限制为5张
-	string      detail_title = 32;// 产品详述标题
-	string      detail_desc = 33;// 产品详述描述
-	string      detail_html = 34;// 产品详述
-	string      detail_mobile_html = 35;// 产品详述移动端
-	string   promotion_start_time = 36;// 促销开始时间
-	string   promotion_end_time = 37;// 促销结束时间
-	int64       promotion_per_limit = 38;// 活动限购数量
-	int64       promotion_type = 39;// 促销类型
-	string      brand_name = 40;// 品牌名称
-	string      product_category_name = 41;// 产品分类名称
-	repeated Sku      sku_list = 42[(validate.rules).repeated = {min_items: 1}];// sku列表
+    string product_id = 1; // 商品id（使用字符串防止在js中精度丢失）
+    Product product = 2;
 }
 message UpdateProductReply {}
 
 message DeleteProductRequest {
-	string       product_id = 1;
+    string product_id = 1;
 }
 message DeleteProductReply {}
 
 message GetProductRequest {
-	string       product_id = 1;
+    string product_id = 1;
 }
-message GetProductReply {}
-
+message GetProductReply {
+    Product product = 1;
+}
+message Pagination {
+    uint32 page_number = 1;
+    uint32 page_size = 2;
+}
 message ListProductRequest {
+    Pagination pagination = 1;
+    string name = 2;
+    string product_sn = 3;
 }
-message ListProductReply {}
-
-
-service ProductService {
-
+message ListProductReply {
+    int64 total = 1;
+    repeated Product products = 2;
 }

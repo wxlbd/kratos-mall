@@ -70,7 +70,7 @@ func (m *AddCartItemParam) validate(all bool) error {
 
 	if m.GetProductId() <= 0 {
 		err := AddCartItemParamValidationError{
-			field:  "ProductId",
+			field:  "product_id",
 			reason: "value must be greater than 0",
 		}
 		if !all {
@@ -205,7 +205,7 @@ func (m *UpdateCartItemParam) validate(all bool) error {
 
 	if m.GetProductId() <= 0 {
 		err := UpdateCartItemParamValidationError{
-			field:  "ProductId",
+			field:  "product_id",
 			reason: "value must be greater than 0",
 		}
 		if !all {
@@ -564,7 +564,7 @@ func (m *DeleteCartItemParam) validate(all bool) error {
 
 	if m.GetProductId() <= 0 {
 		err := DeleteCartItemParamValidationError{
-			field:  "ProductId",
+			field:  "product_id",
 			reason: "value must be greater than 0",
 		}
 		if !all {
@@ -688,7 +688,7 @@ func (m *CartItem) validate(all bool) error {
 
 	if m.GetProductId() <= 0 {
 		err := CartItemValidationError{
-			field:  "ProductId",
+			field:  "product_id",
 			reason: "value must be greater than 0",
 		}
 		if !all {
