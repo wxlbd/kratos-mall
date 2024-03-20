@@ -20,9 +20,9 @@ type PmsProductCategory struct {
 	Icon         string                `gorm:"column:icon;type:varchar(255);comment:图标;not null;" json:"icon"` // 图标
 	Keywords     JsonArray[string]     `gorm:"column:keywords;type:json;not null;" json:"keywords"`
 	Description  string                `gorm:"column:description;type:text;comment:描述;" json:"description"` // 描述
-	CreateTime   time.Time             `gorm:"column:create_time;type:timestamp;comment:创建时间;not null;" json:"create_time"`
-	UpdateTime   time.Time             `gorm:"column:update_time;type:timestamp;comment:更新时间;not null;" json:"update_time"`
-	DeletedAt    soft_delete.DeletedAt `gorm:"column:deleted_at;type:timestamp;comment:删除时间;not null;" json:"deleted_at"`
+	CreatedAt    time.Time             `gorm:"column:created_at;comment:创建时间;not null;" json:"created_at"`
+	UpdatedAt    time.Time             `gorm:"column:updated_at;comment:更新时间;not null;" json:"updated_at"`
+	DeletedAt    soft_delete.DeletedAt `gorm:"column:deleted_at;comment:删除时间;not null;" json:"deleted_at"`
 }
 
 // PmsProduct 商品
@@ -115,15 +115,18 @@ type PmsProductAttribute struct {
 	Type                       int32                 `gorm:"column:type;type:int(1);comment:属性的类型；1: 规格；2: 参数;not null;" json:"type"`                              // 属性的类型；0: 规格；1: 参数
 	CreatedAt                  time.Time             `gorm:"column:created_at;type:datetime;comment:创建时间;not null;" json:"created_at"`                             // 创建时间
 	UpdatedAt                  time.Time             `gorm:"column:updated_at;type:datetime;comment:更新时间;not null;" json:"updated_at"`                             // 更新时间
-	DeletedAt                  soft_delete.DeletedAt `gorm:"column:deleted_at;type:soft_delete.DeletedAt;" json:"deleted_at"`
+	DeletedAt                  soft_delete.DeletedAt `gorm:"column:deleted_at;" json:"deleted_at"`
 }
 
 // PmsProductAttributeCategory 商品属性分类
 type PmsProductAttributeCategory struct {
-	Id             int64  `gorm:"column:id;type:bigint;primaryKey;" json:"id"`
-	Name           string `gorm:"column:name;type:varchar(64);not null;" json:"name"`
-	AttributeCount int32  `gorm:"column:attribute_count;type:int;comment:属性数量;not null;default:0;" json:"attribute_count"` // 属性数量
-	ParamCount     int32  `gorm:"column:param_count;type:int;comment:参数数量;not null;default:0;" json:"param_count"`         // 参数数量
+	Id             int64                 `gorm:"column:id;type:bigint;primaryKey;" json:"id"`
+	Name           string                `gorm:"column:name;type:varchar(64);not null;" json:"name"`
+	AttributeCount int32                 `gorm:"column:attribute_count;type:int;comment:属性数量;not null;default:0;" json:"attribute_count"` // 属性数量
+	ParamCount     int32                 `gorm:"column:param_count;type:int;comment:参数数量;not null;default:0;" json:"param_count"`         // 参数数量
+	CreatedAt      time.Time             `gorm:"column:created_at;type:datetime;comment:创建时间;not null;" json:"created_at"`                // 创建时间
+	UpdatedAt      time.Time             `gorm:"column:updated_at;type:datetime;comment:更新时间;not null;" json:"updated_at"`                // 更新时间
+	DeletedAt      soft_delete.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
 }
 
 // PmsProductAttributeValue 商品属性值
@@ -133,7 +136,7 @@ type PmsProductAttributeValue struct {
 	Value              JsonArray[string]     `gorm:"column:value;type:json;comment:手动添加规格或参数的值，参数单值，规格有多个时以逗号隔开;not null;" json:"value"` // 手动添加规格或参数的值，参数单值，规格有多个时以逗号隔开
 	CreatedAt          time.Time             `gorm:"column:created_at;type:datetime;comment:创建时间;not null;" json:"created_at"`           // 创建时间
 	UpdatedAt          time.Time             `gorm:"column:updated_at;type:datetime;comment:更新时间;not null;" json:"updated_at"`           // 更新时间
-	DeletedAt          soft_delete.DeletedAt `gorm:"column:deleted_at;type:soft_delete.DeletedAt;" json:"deleted_at"`
+	DeletedAt          soft_delete.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
 }
 
 // PmsProductCategoryAttributeRelation 产品的分类和属性的关系表，用于设置分类筛选条件（只支持一级分类）
