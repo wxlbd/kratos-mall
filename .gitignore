@@ -29,3 +29,9 @@ go.work
 /.idea/protoeditor.xml
 /.idea/vcs.xml
 /.air.toml
+/tmp/build-errors.log
+/tmp/main
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/protobuf.xml
+/.idea/watcherTasks.xml
+/configs/config.yaml
