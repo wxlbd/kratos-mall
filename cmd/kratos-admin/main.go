@@ -2,19 +2,18 @@ package main
 
 import (
 	"flag"
+	"log/slog"
 	"os"
-
-	"kratos-admin/internal/conf"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
-
+	"github.com/wxlbd/tint"
 	_ "go.uber.org/automaxprocs"
+	"kratos-admin/internal/conf"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
@@ -49,15 +48,16 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 
 func main() {
 	flag.Parse()
-	logger := log.With(log.NewStdLogger(os.Stdout),
-		"ts", log.DefaultTimestamp,
-		"caller", log.DefaultCaller,
-		"service.id", id,
-		"service.name", Name,
-		"service.version", Version,
-		"trace.id", tracing.TraceID(),
-		"span.id", tracing.SpanID(),
-	)
+	//logger := log.With(log.NewStdLogger(os.Stdout),
+	//	"ts", log.DefaultTimestamp,
+	//	"caller", log.DefaultCaller,
+	//	"service.id", id,
+	//	"service.name", Name,
+	//	"service.version", Version,
+	//	"trace.id", tracing.TraceID(),
+	//	"span.id", tracing.SpanID(),
+	//)
+	logger := tint.NewLogger(os.Stdout, slog.LevelDebug)
 	c := config.New(
 		config.WithSource(
 			file.NewSource(flagconf),

@@ -8,7 +8,7 @@ package main
 
 import (
 	"github.com/go-kratos/kratos/v2"
-	"github.com/go-kratos/kratos/v2/log"
+	"github.com/wxlbd/tint"
 	"kratos-admin/internal/biz"
 	"kratos-admin/internal/conf"
 	"kratos-admin/internal/data"
@@ -23,7 +23,7 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
+func wireApp(confServer *conf.Server, confData *conf.Data, logger *tint.Logger) (*kratos.App, func(), error) {
 	db, cleanup := data.NewGorm(confData, logger)
 	universalClient, err := data.NewRedis(confData)
 	if err != nil {
