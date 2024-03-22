@@ -6,6 +6,7 @@
 package main
 
 import (
+	"github.com/go-kratos/kratos/v2/log"
 	"kratos-admin/internal/biz"
 	"kratos-admin/internal/conf"
 	"kratos-admin/internal/data"
@@ -13,11 +14,18 @@ import (
 	"kratos-admin/internal/service"
 
 	"github.com/go-kratos/kratos/v2"
-	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
+	"github.com/wxlbd/tint"
 )
 
 // wireApp init kratos application.
-func wireApp(*conf.Server, *conf.Data, log.Logger) (*kratos.App, func(), error) {
-	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, newApp))
+func wireApp(*conf.Server, *conf.Data, *tint.Logger) (*kratos.App, func(), error) {
+	panic(wire.Build(
+		wire.Bind(new(log.Logger), new(*tint.Logger)),
+		server.ProviderSet,
+		data.ProviderSet,
+		biz.ProviderSet,
+		service.ProviderSet,
+		newApp,
+	))
 }

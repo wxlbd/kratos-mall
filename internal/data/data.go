@@ -3,6 +3,10 @@ package data
 import (
 	"context"
 
+	"github.com/wxlbd/tint"
+
+	"kratos-admin/internal/data/po"
+
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
 	redis "github.com/redis/go-redis/v9"
@@ -32,8 +36,10 @@ func NewData(c *conf.Data, logger log.Logger, db *gorm.DB, rdb redis.UniversalCl
 	}, cleanup, nil
 }
 
-func NewGorm(cfg *conf.Data, logger log.Logger) (*gorm.DB, func()) {
-	db, err := gorm.Open(mysql.Open(cfg.Database.Source), &gorm.Config{})
+func NewGorm(cfg *conf.Data, l *tint.Logger) (*gorm.DB, func()) {
+	db, err := gorm.Open(mysql.Open(cfg.Database.Source), &gorm.Config{
+		Logger: l,
+	})
 	if err != nil {
 		panic(err)
 	}
@@ -45,6 +51,11 @@ func NewGorm(cfg *conf.Data, logger log.Logger) (*gorm.DB, func()) {
 	sqlDB.SetMaxOpenConns(20)
 	f := func() {
 		_ = sqlDB.Close()
+	}
+	// stmt := db.Session(&gorm.Session{DryRun: true}).AutoMigrate(&po.PmsProduct{})
+	if err := db.AutoMigrate(&po.PmsProduct{}, &po.PmsProductCategory{}, &po.PmsProductAttribute{}, &po.PmsProductAttributeValue{}, &po.PmsProductSku{}); err != nil {
+		// log.NewHelper(logger).Error(err)
+		return nil, nil
 	}
 	return db, f
 }
