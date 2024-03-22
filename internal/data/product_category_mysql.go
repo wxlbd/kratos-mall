@@ -52,10 +52,10 @@ func (p *ProductCategoryRepo) FindProductCategoryList(ctx context.Context, param
 	if err != nil {
 		return nil, api.ErrorDbError("Failed to find product category list").WithCause(err)
 	}
-
-	reply.ProductCategories = make([]*v1.ProductCategory, 0, len(list))
+	reply = new(v1.FindProductCategoryListReply)
+	reply.List = make([]*v1.ProductCategory, 0, len(list))
 	for _, v := range list {
-		reply.ProductCategories = append(reply.ProductCategories, p.productCategoryPoToDto(v))
+		reply.List = append(reply.List, p.productCategoryPoToDto(v))
 	}
 	reply.Total = int32(count)
 	return
@@ -111,9 +111,12 @@ func (p *ProductCategoryRepo) CreateProductCategory(ctx context.Context, param *
 }
 
 func (p *ProductCategoryRepo) UpdateProductCategory(ctx context.Context, param *v1.UpdateProductCategoryRequest) error {
-	product := p.productCategoryDtoToPo(param.ProductCategory)
-	err := p.data.DB.WithContext(ctx).Model(&po.PmsProductCategory{}).Updates(product).Error
+	id, err := strconv.ParseInt(param.ProductCategoryId, 10, 64)
 	if err != nil {
+		return api.ErrorInvalidParam("Invalid product category id %s", param.ProductCategory.Id)
+	}
+	product := p.productCategoryDtoToPo(param.ProductCategory)
+	if err := p.data.DB.WithContext(ctx).Model(&po.PmsProductCategory{Id: id}).Updates(product).Error; err != nil {
 		return api.ErrorDbError("Failed to update product category %d", param.ProductCategory.Id).WithCause(err)
 	}
 	return nil
