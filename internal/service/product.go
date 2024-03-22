@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	v1 "kratos-admin/api"
+	"kratos-admin/api"
 	"kratos-admin/internal/biz"
 
 	pb "kratos-admin/api/product/v1"
@@ -38,7 +38,7 @@ func (s *ProductService) CreateOrUpdateProductAttributeValue(ctx context.Context
 func (s *ProductService) DeleteProductAttributeValue(ctx context.Context, req *pb.DeleteProductAttributeValueRequest) (*pb.DeleteProductAttributeValueReply, error) {
 	id, err := strconv.ParseInt(req.GetProductAttributeValueId(), 10, 64)
 	if err != nil {
-		return nil, v1.ErrorInvalidParam("invalid product Attribute value id")
+		return nil, api.ErrorInvalidParam("invalid product Attribute value id")
 	}
 	if err := s.productAttrValueUseCase.DeleteProductAttributeValue(ctx, id); err != nil {
 		return nil, err
@@ -49,7 +49,7 @@ func (s *ProductService) DeleteProductAttributeValue(ctx context.Context, req *p
 func (s *ProductService) FindProductAttributeValueByAttributeId(ctx context.Context, req *pb.FindProductAttributeValueByAttributeIdRequest) (*pb.FindProductAttributeValueByAttributeIdReply, error) {
 	id, err := strconv.ParseInt(req.GetProductAttributeId(), 10, 64)
 	if err != nil {
-		return nil, v1.ErrorInvalidParam("invalid product Attribute id")
+		return nil, api.ErrorInvalidParam("invalid product Attribute id")
 	}
 	value, err := s.productAttrValueUseCase.FindProductAttributeValueByAttributeId(ctx, id)
 	if err != nil {
@@ -75,7 +75,7 @@ func (s *ProductService) UpdateProductAttribute(ctx context.Context, req *pb.Upd
 func (s *ProductService) DeleteProductAttribute(ctx context.Context, req *pb.DeleteProductAttributeRequest) (*pb.DeleteProductAttributeReply, error) {
 	id, err := strconv.ParseInt(req.GetProductAttributeId(), 10, 64)
 	if err != nil {
-		return nil, v1.ErrorInvalidParam("invalid product Attribute id")
+		return nil, api.ErrorInvalidParam("invalid product Attribute id")
 	}
 	if err := s.productAttrUseCase.DeleteProductAttribute(ctx, id); err != nil {
 		return nil, err
@@ -86,7 +86,7 @@ func (s *ProductService) DeleteProductAttribute(ctx context.Context, req *pb.Del
 func (s *ProductService) FindProductAttribute(ctx context.Context, req *pb.FindProductAttributeRequest) (*pb.FindProductAttributeReply, error) {
 	id, err := strconv.ParseInt(req.GetProductAttributeId(), 10, 64)
 	if err != nil {
-		return nil, v1.ErrorInvalidParam("invalid product Attribute id")
+		return nil, api.ErrorInvalidParam("invalid product Attribute id")
 	}
 	value, err := s.productAttrUseCase.FindProductAttributeById(ctx, id)
 	if err != nil {
@@ -122,7 +122,7 @@ func (s *ProductService) UpdateProductCategory(ctx context.Context, req *pb.Upda
 func (s *ProductService) DeleteProductCategory(ctx context.Context, req *pb.DeleteProductCategoryRequest) (*pb.DeleteProductCategoryReply, error) {
 	id, err := strconv.ParseInt(req.GetProductCategoryId(), 10, 64)
 	if err != nil {
-		return nil, v1.ErrorInvalidParam("invalid product category id")
+		return nil, api.ErrorInvalidParam("invalid product category id")
 	}
 	if err := s.productCategoryUseCase.DeleteProductCategory(ctx, id); err != nil {
 		return nil, err
@@ -133,7 +133,7 @@ func (s *ProductService) DeleteProductCategory(ctx context.Context, req *pb.Dele
 func (s *ProductService) FindProductCategory(ctx context.Context, req *pb.FindProductCategoryRequest) (*pb.FindProductCategoryReply, error) {
 	id, err := strconv.ParseInt(req.GetProductCategoryId(), 10, 64)
 	if err != nil {
-		return nil, v1.ErrorInvalidParam("invalid product category id")
+		return nil, api.ErrorInvalidParam("invalid product category id")
 	}
 	value, err := s.productCategoryUseCase.FindProductCategoryById(ctx, id)
 	if err != nil {
@@ -164,33 +164,33 @@ func (s *ProductService) FindProductCategoryTree(ctx context.Context, req *pb.Fi
 }
 
 func (s *ProductService) productDTOToDO(product *pb.Product) (*biz.Product, error) {
-	productCateIds := make([]int64, 0, len(product.ProductCategoryIds))
-	for _, v := range product.ProductCategoryIds {
+	productCateIds := make([]int64, 0, len(product.CategoryIds))
+	for _, v := range product.CategoryIds {
 		id, err := strconv.ParseInt(v, 10, 64)
 		if err != nil {
-			return nil, v1.ErrorInvalidParam("invalid product category id")
+			return nil, api.ErrorInvalidParam("invalid product category id")
 		}
 		productCateIds = append(productCateIds, id)
 	}
 	freightTemplateId, err := strconv.ParseInt(product.FreightTemplateId, 10, 64)
 	if err != nil {
-		return nil, v1.ErrorInvalidParam("invalid freight template id")
+		return nil, api.ErrorInvalidParam("invalid freight template id")
 	}
 	productAttributeCategoryId, err := strconv.ParseInt(product.ProductAttributeCategoryId, 10, 64)
 	if err != nil {
-		return nil, v1.ErrorInvalidParam("invalid product Attribute category id")
+		return nil, api.ErrorInvalidParam("invalid product Attribute category id")
 	}
 	brandId, err := strconv.ParseInt(product.BrandId, 10, 64)
 	if err != nil {
-		return nil, v1.ErrorInvalidParam("invalid brand id")
+		return nil, api.ErrorInvalidParam("invalid brand id")
 	}
 	promotionStartTime, err := time.Parse(time.DateTime, product.PromotionStartTime)
 	if err != nil {
-		return nil, v1.ErrorInvalidParam("invalid promotion start time")
+		return nil, api.ErrorInvalidParam("invalid promotion start time")
 	}
 	promotionEndTime, err := time.Parse(time.DateTime, product.PromotionEndTime)
 	if err != nil {
-		return nil, v1.ErrorInvalidParam("invalid promotion end time")
+		return nil, api.ErrorInvalidParam("invalid promotion end time")
 	}
 	productSkus := make([]*biz.ProductSku, 0, len(product.SkuList))
 	for _, v := range product.SkuList {
@@ -200,8 +200,12 @@ func (s *ProductService) productDTOToDO(product *pb.Product) (*biz.Product, erro
 		}
 		productSkus = append(productSkus, productSku)
 	}
+	id, err := strconv.ParseInt(product.Id, 10, 64)
+	if err != nil {
+		return nil, api.ErrorInvalidParam("invalid product id")
+	}
 	return &biz.Product{
-		Id:                         0,
+		Id:                         id,
 		ProductCategoryIds:         productCateIds,
 		FreightTemplateId:          freightTemplateId,
 		BrandId:                    brandId,
@@ -241,7 +245,7 @@ func (s *ProductService) productDTOToDO(product *pb.Product) (*biz.Product, erro
 		PromotionPerLimit:          product.PromotionPerLimit,
 		PromotionType:              product.PromotionType,
 		BrandName:                  product.BrandName,
-		ProductCategoryName:        product.ProductCategoryName,
+		ProductCategoryName:        product.CategoryName,
 		SkuList:                    productSkus,
 	}, nil
 }
@@ -261,6 +265,7 @@ func (s *ProductService) CreateProduct(ctx context.Context, req *pb.CreateProduc
 }
 
 func (s *ProductService) UpdateProduct(ctx context.Context, req *pb.UpdateProductRequest) (*pb.UpdateProductReply, error) {
+	req.Product.Id = req.GetProductId()
 	product, err := s.productDTOToDO(req.Product)
 	if err != nil {
 		return nil, err
@@ -287,9 +292,9 @@ func (s *ProductService) ProductDOToDTO(product *biz.Product) *pb.Product {
 	}
 
 	p := &pb.Product{
-		ProductId:          strconv.FormatInt(product.Id, 10),
-		ProductCategoryIds: productCateIds,
-		BrandId:            strconv.FormatInt(product.BrandId, 10),
+		Id:          strconv.FormatInt(product.Id, 10),
+		CategoryIds: productCateIds,
+		BrandId:     strconv.FormatInt(product.BrandId, 10),
 		// FlashPromotionId:           strconv.FormatInt(product.FreightTemplateId, 10),
 		ProductAttributeCategoryId: strconv.FormatInt(product.ProductAttributeCategoryId, 10),
 		Name:                       product.Name,
@@ -327,7 +332,7 @@ func (s *ProductService) ProductDOToDTO(product *biz.Product) *pb.Product {
 		PromotionPerLimit:          product.PromotionPerLimit,
 		PromotionType:              product.PromotionType,
 		BrandName:                  product.BrandName,
-		ProductCategoryName:        product.ProductCategoryName,
+		CategoryName:               product.ProductCategoryName,
 		FreightTemplateId:          strconv.FormatInt(product.FreightTemplateId, 10),
 	}
 	return p
@@ -336,7 +341,7 @@ func (s *ProductService) ProductDOToDTO(product *biz.Product) *pb.Product {
 func (s *ProductService) GetProduct(ctx context.Context, req *pb.GetProductRequest) (*pb.GetProductReply, error) {
 	id, err := strconv.ParseInt(req.GetProductId(), 10, 64)
 	if err != nil {
-		return nil, v1.ErrorInvalidParam("invalid product id")
+		return nil, api.ErrorInvalidParam("invalid product id")
 	}
 	product, err := s.productUseCase.GetProduct(ctx, id)
 	if err != nil {
@@ -395,7 +400,7 @@ func (s *ProductService) skuDOToDTO(v *biz.ProductSku) *pb.ProductSku {
 func (s *ProductService) DeleteProductSku(ctx context.Context, req *pb.DeleteProductSkuRequest) (*pb.DeleteProductSkuReply, error) {
 	skuId, err := strconv.ParseInt(req.GetProductSkuId(), 10, 64)
 	if err != nil {
-		return nil, v1.ErrorInvalidParam("invalid sku id")
+		return nil, api.ErrorInvalidParam("invalid sku id")
 	}
 	if err := s.productUseCase.DeleteProductSku(ctx, skuId); err != nil {
 	}
@@ -421,21 +426,21 @@ func (s *ProductService) UpdateProductSku(ctx context.Context, req *pb.UpdatePro
 func (s *ProductService) skuDTOToDO(req *pb.ProductSku) (*biz.ProductSku, error) {
 	skuId, err := strconv.ParseInt(req.GetId(), 10, 64)
 	if err != nil {
-		return nil, v1.ErrorInvalidParam("invalid sku id")
+		return nil, api.ErrorInvalidParam("invalid sku id")
 	}
 	productId, err := strconv.ParseInt(req.GetProductId(), 10, 64)
 	if err != nil {
-		return nil, v1.ErrorInvalidParam("invalid product id")
+		return nil, api.ErrorInvalidParam("invalid product id")
 	}
 	attributs := make([]biz.Attribute, 0, len(req.Attributes))
 	for _, attribute := range req.Attributes {
 		attributeId, err := strconv.ParseInt(attribute.AttributeId, 10, 64)
 		if err != nil {
-			return nil, v1.ErrorInvalidParam("invalid attribute id")
+			return nil, api.ErrorInvalidParam("invalid attribute id")
 		}
 		attributeValueId, err := strconv.ParseInt(attribute.AttributeValueId, 10, 64)
 		if err != nil {
-			return nil, v1.ErrorInvalidParam("invalid attribute value id")
+			return nil, api.ErrorInvalidParam("invalid attribute value id")
 		}
 		attributs = append(attributs, biz.Attribute{
 			AttributeId:      attributeId,
