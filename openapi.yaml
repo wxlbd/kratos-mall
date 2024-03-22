@@ -281,7 +281,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/product/category:
+    /v1/product/categories:
         get:
             tags:
                 - ProductService
@@ -333,9 +333,11 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /v1/product/category:
         post:
             tags:
                 - ProductService
+            description: 创建商品分类
             operationId: ProductService_CreateProductCategory
             requestBody:
                 content:
@@ -356,7 +358,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/product/category/tree:
+    /v1/product/category-tree:
         get:
             tags:
                 - ProductService
@@ -734,7 +736,7 @@ components:
         FindProductCategoryListReply:
             type: object
             properties:
-                productCategories:
+                list:
                     type: array
                     items:
                         $ref: '#/components/schemas/ProductCategory'
@@ -785,9 +787,9 @@ components:
         Product:
             type: object
             properties:
-                productId:
+                id:
                     type: string
-                productCategoryIds:
+                categoryIds:
                     type: array
                     items:
                         type: string
@@ -891,7 +893,7 @@ components:
                     format: enum
                 brandName:
                     type: string
-                productCategoryName:
+                categoryName:
                     type: string
                 skuList:
                     type: array
