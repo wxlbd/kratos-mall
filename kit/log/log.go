@@ -157,7 +157,7 @@ func (h *Logger) Trace(ctx context.Context, begin time.Time, fc func() (sql stri
 				slog.String("time", fmt.Sprintf("%.3fms", float64(elapsed.Nanoseconds())/1e6)),
 				slog.String("sql", sql),
 			)
+			_ = h.Handle(ctx, r)
 		}
-		_ = h.Handle(ctx, r)
 	}
 }
