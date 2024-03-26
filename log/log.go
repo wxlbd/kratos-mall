@@ -152,6 +152,7 @@ func (h *Logger) Trace(ctx context.Context, begin time.Time, fc func() (sql stri
 		if err != nil {
 			r.AddAttrs(handler.Err(err))
 		}
+		// 只有rows不为-1时，才会记录sql
 		if rows != -1 {
 			r.AddAttrs(
 				slog.String("time", fmt.Sprintf("%.3fms", float64(elapsed.Nanoseconds())/1e6)),
