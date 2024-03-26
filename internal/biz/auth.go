@@ -43,20 +43,20 @@ func NewAuthUseCase(data *conf.Data) *AuthUseCase {
 }
 
 type MyClaims struct {
-	MemberId int64 `json:"member_id"`
 	jwtv5.RegisteredClaims
+	Role string `json:"role"`
 }
 
-func (u *AuthUseCase) GenerateToken(memberId int64, username string) (string, error) {
+func (u *AuthUseCase) GenerateToken(memberId, role string) (string, error) {
 	claims := MyClaims{
-		MemberId: memberId,
+		Role: role,
 		RegisteredClaims: jwtv5.RegisteredClaims{
-			Issuer:    "kratos-admin",
-			Subject:   username,
+			Issuer:    "kratos-admin", // 发行人
+			Subject:   memberId,       // 主题
 			IssuedAt:  jwtv5.NewNumericDate(time.Now()),
 			NotBefore: jwtv5.NewNumericDate(time.Now()),
 			ExpiresAt: jwtv5.NewNumericDate(time.Now().Add(time.Hour * 24)),
-			Audience:  jwtv5.ClaimStrings{"kratos-admin", "kratos-admin-api"},
+			Audience:  jwtv5.ClaimStrings{"kratos-admin", "kratos-admin-api"}, // 接收人
 		},
 	}
 	token := jwtv5.NewWithClaims(jwtv5.SigningMethodHS256, claims)
@@ -83,7 +83,7 @@ func (u *AuthUseCase) ParseToken(jwtToken string) (map[string]any, error) {
 	}
 
 	return map[string]any{
-		"member_id": claims.MemberId,
+		"role": claims.Role,
 	}, nil
 }
 

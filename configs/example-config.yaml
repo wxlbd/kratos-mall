@@ -15,3 +15,8 @@ data:
     write_timeout: 0.2s
   jwt:
     secret: kratos
+  etcd:
+    username:
+    password:
+    addresses:
+      - 127.0.0.1:2379
