@@ -25,11 +25,10 @@ var (
 
 type Options struct {
 	SigningMethod jwt.SigningMethod
-	SigningKey    []byte
-	// token过期时长（s）
-	ExpiresTime time.Duration
-	Issuer      string
-	Audience    []string
+	SigningKey    []byte        // 秘钥
+	ExpiresTime   time.Duration // token有效时长（s）
+	Issuer        string        // 用于标识JWT的发行者，可以是一个URI或者服务器的名称。
+	Audience      []string      // aud用于标识JWT的预期接收者，可以是一个或多个实体。
 }
 
 type Claims struct {
@@ -85,7 +84,6 @@ var defaultOptions = Options{
 }
 
 func NewJwt(opts ...Option) *Jwt {
-
 	for _, opt := range opts {
 		opt.Apply(&defaultOptions)
 	}
