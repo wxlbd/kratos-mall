@@ -14,14 +14,14 @@ import (
 )
 
 var (
-	_ logger.Interface = (*Logger)(nil)
-	_ log.Logger       = (*Logger)(nil)
+	_ logger.Interface = (*Logger)(nil) // gorm接口实现检查
+	_ log.Logger       = (*Logger)(nil) // kratos接口实现检查
 )
 
 type Options struct {
-	Level      slog.Level
-	Writer     io.Writer
-	TimeFormat string
+	Level      slog.Level // 日志级别
+	Writer     io.Writer  // 日志输出
+	TimeFormat string     // 时间格式
 }
 
 type Option interface {
