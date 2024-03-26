@@ -29,8 +29,8 @@ func NewHTTPServer(c *conf.Server, productSvc *service.ProductService, logger lo
 			metrics.Server(),       // 监控中间件
 			validate.Validator(),   // 参数校验
 			metadata.Server(),      // 元数据中间
-			selector.Server(au.JwtMiddleware()).
-				Match(NewWhiteListMatcher()).Build(), // 路由选择中间件
+			// selector.Server(au.JwtMiddleware()).
+			//	Match(NewWhiteListMatcher()).Build(), // 路由选择中间件
 		),
 	}
 	if c.Http.Network != "" {

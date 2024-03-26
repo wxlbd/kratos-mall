@@ -4,16 +4,17 @@ import (
 	"context"
 	"time"
 
+	orderv1 "kratos-admin/api/order/v1"
 	v1 "kratos-admin/api/product/v1"
 )
 
 // CartRepo 购物车仓储接口
 type CartRepo interface {
-	AddItem(ctx context.Context, param *AddCartItemParam) error
-	DeleteItem(ctx context.Context, param *DeleteCartItemParam) error
-	UpdateItemQuantity(ctx context.Context, param *UpdateCartItemParam) error
-	GetCartList(ctx context.Context, param *GetCartListParam) ([]*CartItem, error)
-	ClearCart(ctx context.Context, param *ClearCartParam) error
+	AddItem(ctx context.Context, req *orderv1.AddCartItemRequest) error
+	DeleteItem(ctx context.Context, memberId string, productSkuIds ...string) error
+	UpdateItemQuantity(ctx context.Context, req *orderv1.UpdateCartItemQuantityRequest) error
+	FindAll(ctx context.Context, param *orderv1.GetCartListRequest) ([]*orderv1.CartItem, error)
+	Clear(ctx context.Context, param *orderv1.ClearCartRequest) error
 }
 
 type Product struct {
