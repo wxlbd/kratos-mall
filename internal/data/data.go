@@ -3,17 +3,17 @@ package data
 import (
 	"context"
 
-	"github.com/wxlbd/tint"
+	tintlog "github.com/wxlbd/kit/log"
 
-	"kratos-admin/internal/data/po"
+	"github.com/wxlbd/kratos-pms/internal/data/po"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
 	redis "github.com/redis/go-redis/v9"
+	"github.com/wxlbd/kratos-pms/internal/conf"
 	"gorm.io/driver/mysql"
 	_ "gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"kratos-admin/internal/conf"
 )
 
 // ProviderSet is data providers.
@@ -36,7 +36,7 @@ func NewData(c *conf.Data, logger log.Logger, db *gorm.DB, rdb redis.UniversalCl
 	}, cleanup, nil
 }
 
-func NewGorm(cfg *conf.Data, l *tint.Logger) (*gorm.DB, func()) {
+func NewGorm(cfg *conf.Data, l *tintlog.Logger) (*gorm.DB, func()) {
 	db, err := gorm.Open(mysql.Open(cfg.Database.Source), &gorm.Config{
 		Logger: l,
 	})

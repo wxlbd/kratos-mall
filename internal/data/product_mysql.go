@@ -3,12 +3,12 @@ package data
 import (
 	"context"
 
-	v1 "kratos-admin/api/product/v1"
+	v1 "github.com/wxlbd/kratos-pms/api/product/v1"
 
+	"github.com/wxlbd/kratos-pms/api"
+	"github.com/wxlbd/kratos-pms/internal/biz"
+	"github.com/wxlbd/kratos-pms/internal/data/po"
 	"gorm.io/gorm"
-	"kratos-admin/api"
-	"kratos-admin/internal/biz"
-	"kratos-admin/internal/data/po"
 )
 
 type ProductRepo struct {

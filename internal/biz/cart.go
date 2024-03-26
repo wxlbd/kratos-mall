@@ -3,7 +3,7 @@ package biz
 import (
 	"context"
 
-	v1 "kratos-admin/api/order/v1"
+	v1 "github.com/wxlbd/kratos-pms/api/order/v1"
 )
 
 type CartUseCase struct {

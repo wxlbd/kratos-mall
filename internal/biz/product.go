@@ -3,9 +3,9 @@ package biz
 import (
 	"context"
 
-	v1 "kratos-admin/api"
+	v1 "github.com/wxlbd/kratos-pms/api"
 
-	pb "kratos-admin/api/product/v1"
+	pb "github.com/wxlbd/kratos-pms/api/product/v1"
 )
 
 type ProductUseCase struct {

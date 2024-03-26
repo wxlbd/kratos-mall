@@ -10,8 +10,8 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/transport"
 	jwtv5 "github.com/golang-jwt/jwt/v5"
-	"kratos-admin/api"
-	"kratos-admin/internal/conf"
+	"github.com/wxlbd/kratos-pms/api"
+	"github.com/wxlbd/kratos-pms/internal/conf"
 )
 
 const (
