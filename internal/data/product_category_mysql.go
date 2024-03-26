@@ -117,7 +117,7 @@ func (p *ProductCategoryRepo) UpdateProductCategory(ctx context.Context, param *
 	}
 	product := p.productCategoryDtoToPo(param.ProductCategory)
 	if err := p.data.DB.WithContext(ctx).Model(&po.PmsProductCategory{Id: id}).Updates(product).Error; err != nil {
-		return api.ErrorDbError("Failed to update product category %d", param.ProductCategory.Id).WithCause(err)
+		return api.ErrorDbError("Failed to update product category %s", param.ProductCategory.Id).WithCause(err)
 	}
 	return nil
 }
