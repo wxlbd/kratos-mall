@@ -11,9 +11,9 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	"github.com/wxlbd/tint"
+	tintlog "github.com/wxlbd/kit/log"
+	"github.com/wxlbd/kratos-pms/internal/conf"
 	_ "go.uber.org/automaxprocs"
-	"kratos-admin/internal/conf"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
@@ -57,7 +57,7 @@ func main() {
 	//	"trace.id", tracing.TraceID(),
 	//	"span.id", tracing.SpanID(),
 	//)
-	logger := tint.NewLogger(os.Stdout, slog.LevelDebug)
+	logger := tintlog.NewLogger(tintlog.WithWriter(os.Stdout), tintlog.WithLevel(slog.LevelDebug))
 	c := config.New(
 		config.WithSource(
 			file.NewSource(flagconf),

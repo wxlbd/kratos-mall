@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 
-	v1 "kratos-admin/api/order/v1"
+	v1 "github.com/wxlbd/kratos-pms/api/order/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/redis/go-redis/v9"
-	api "kratos-admin/api"
-	"kratos-admin/internal/biz"
+	api "github.com/wxlbd/kratos-pms/api"
+	"github.com/wxlbd/kratos-pms/internal/biz"
 )
 
 const (

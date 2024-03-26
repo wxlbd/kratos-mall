@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 
-	v1 "kratos-admin/api/product/v1"
+	v1 "github.com/wxlbd/kratos-pms/api/product/v1"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
@@ -14,9 +14,9 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	"kratos-admin/internal/biz"
-	"kratos-admin/internal/conf"
-	"kratos-admin/internal/service"
+	"github.com/wxlbd/kratos-pms/internal/biz"
+	"github.com/wxlbd/kratos-pms/internal/conf"
+	"github.com/wxlbd/kratos-pms/internal/service"
 )
 
 // NewHTTPServer new an HTTP server.

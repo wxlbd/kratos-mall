@@ -5,10 +5,10 @@ import (
 	"strconv"
 	"time"
 
-	"kratos-admin/api"
-	"kratos-admin/internal/biz"
+	"github.com/wxlbd/kratos-pms/api"
+	"github.com/wxlbd/kratos-pms/internal/biz"
 
-	pb "kratos-admin/api/product/v1"
+	pb "github.com/wxlbd/kratos-pms/api/product/v1"
 )
 
 type ProductService struct {

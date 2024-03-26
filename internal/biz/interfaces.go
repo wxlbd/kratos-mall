@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	orderv1 "kratos-admin/api/order/v1"
-	v1 "kratos-admin/api/product/v1"
+	orderv1 "github.com/wxlbd/kratos-pms/api/order/v1"
+	v1 "github.com/wxlbd/kratos-pms/api/product/v1"
 )
 
 // CartRepo 购物车仓储接口

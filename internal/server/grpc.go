@@ -1,9 +1,9 @@
 package server
 
 import (
-	v1 "kratos-admin/api/product/v1"
-	"kratos-admin/internal/conf"
-	"kratos-admin/internal/service"
+	v1 "github.com/wxlbd/kratos-pms/api/product/v1"
+	"github.com/wxlbd/kratos-pms/internal/conf"
+	"github.com/wxlbd/kratos-pms/internal/service"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"

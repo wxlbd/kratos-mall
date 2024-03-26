@@ -7,11 +7,11 @@ package main
 
 import (
 	"github.com/go-kratos/kratos/v2/log"
-	"kratos-admin/internal/biz"
-	"kratos-admin/internal/conf"
-	"kratos-admin/internal/data"
-	"kratos-admin/internal/server"
-	"kratos-admin/internal/service"
+	"github.com/wxlbd/kratos-pms/internal/biz"
+	"github.com/wxlbd/kratos-pms/internal/conf"
+	"github.com/wxlbd/kratos-pms/internal/data"
+	"github.com/wxlbd/kratos-pms/internal/server"
+	"github.com/wxlbd/kratos-pms/internal/service"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/google/wire"

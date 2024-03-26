@@ -4,11 +4,11 @@ import (
 	"context"
 	"strconv"
 
+	"github.com/wxlbd/kratos-pms/api"
+	v1 "github.com/wxlbd/kratos-pms/api/product/v1"
+	"github.com/wxlbd/kratos-pms/internal/biz"
+	"github.com/wxlbd/kratos-pms/internal/data/po"
 	"gorm.io/gorm"
-	"kratos-admin/api"
-	v1 "kratos-admin/api/product/v1"
-	"kratos-admin/internal/biz"
-	"kratos-admin/internal/data/po"
 )
 
 type ProductCategoryRepo struct {
