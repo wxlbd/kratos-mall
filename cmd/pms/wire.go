@@ -15,13 +15,13 @@ import (
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/google/wire"
-	"github.com/wxlbd/tint"
+	tintlog "github.com/wxlbd/kit/log"
 )
 
 // wireApp init kratos application.
-func wireApp(*conf.Server, *conf.Data, *tint.Logger) (*kratos.App, func(), error) {
+func wireApp(*conf.Server, *conf.Data, *tintlog.Logger) (*kratos.App, func(), error) {
 	panic(wire.Build(
-		wire.Bind(new(log.Logger), new(*tint.Logger)),
+		wire.Bind(new(log.Logger), new(*tintlog.Logger)),
 		server.ProviderSet,
 		data.ProviderSet,
 		biz.ProviderSet,

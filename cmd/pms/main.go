@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"os"
 
+	"github.com/go-kratos/kratos/contrib/registry/etcd/v2"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
@@ -13,6 +14,7 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/http"
 	tintlog "github.com/wxlbd/kit/log"
 	"github.com/wxlbd/kratos-pms/internal/conf"
+	clientv3 "go.etcd.io/etcd/client/v3"
 	_ "go.uber.org/automaxprocs"
 )
 
@@ -32,10 +34,21 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
+func newApp(c *conf.Data, logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
+	// new etcd client
+	client, err := clientv3.New(clientv3.Config{
+		Endpoints: c.Etcd.Addresses,
+		Username:  c.Etcd.Username,
+		Password:  c.Etcd.Password,
+	})
+	if err != nil {
+		panic(err)
+	}
+	// new reg with etcd client
+	reg := etcd.New(client)
 	return kratos.New(
 		kratos.ID(id),
-		kratos.Name(Name),
+		kratos.Name("pms"),
 		kratos.Version(Version),
 		kratos.Metadata(map[string]string{}),
 		kratos.Logger(logger),
@@ -43,6 +56,7 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 			gs,
 			hs,
 		),
+		kratos.Registrar(reg),
 	)
 }
 
@@ -57,6 +71,7 @@ func main() {
 	//	"trace.id", tracing.TraceID(),
 	//	"span.id", tracing.SpanID(),
 	//)
+
 	logger := tintlog.NewLogger(tintlog.WithWriter(os.Stdout), tintlog.WithLevel(slog.LevelDebug))
 	c := config.New(
 		config.WithSource(
