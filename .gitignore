@@ -25,3 +25,4 @@ go.work
 /tmp/build-errors.log
 /tmp/main
 /configs/config.yaml
+cmd/pms/wire_gen.go
